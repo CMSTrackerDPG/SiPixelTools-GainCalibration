@@ -1,21 +1,23 @@
 # Pixel gain calibration
 
+Code to run the gain calibration and obtain pedestals (offsets) and gains (slopes) per pixel.
+
+
+## Software setup
+
 Prepare your working directory with CMSSW
 
 ```
 export SCRAM_ARCH=slc7_amd64_gcc820
-mkdir pixels
-cd pixels
-cmsrel CMSSW_11_1_0_pre1
-cd CMSSW_11_1_0_pre1/src
+cmsrel CMSSW_11_1_4
+cd CMSSW_11_1_4/src
 cmsenv
-git clone https://github.com/cms-analysis/DPGAnalysis-SiPixelTools
-rm -r DPGAnalysis-SiPixelTools/PixelDBTools/     # not needed, and does not compile...
-rm -r DPGAnalysis-SiPixelTools/PixelTriplets/    # not needed, and does not compile...
-rm -r DPGAnalysis-SiPixelTools/HitAnalyzerPhase2 # not needed, and does not compile...
-scram b -j 20
-cd DPGAnalysis-SiPixelTools/GainCalibration/test
+git clone https://github.com/CMSTrackerDPG/SiPixelTools-GainCalibration.git SiPixelTools/GainCalibration
+scram b -j 8
+cd SiPixelTools/GainCalibration/test
 ```
+
+## Running the code
 
 To run, the syntax is ./Run.sh -create 2381 inputfolder outputfolder, e.g
 
@@ -59,9 +61,11 @@ The last step is to produce the payload (a database object)
 
 where YEAR is the year the calibration was taken and VERSION is the number of payloads produced in that year.
  
-After this is done, please notify the following people of the location of the database object
+After this is done, please notify the following people of the location of the database object:
+
 Currently (this list might change)
-Danek Kotlinksi <danek.kotlinski@psi.ch>
-Tamás Vámi <vami.tamas@wigner.mta.hu>
+
+Danek Kotlinski <danek.kotlinski@psi.ch>  
+Tamás Vámi <vami.tamas@wigner.mta.hu>  
 Tanja Susa <Tatjana.Susa@cern.ch>
 
