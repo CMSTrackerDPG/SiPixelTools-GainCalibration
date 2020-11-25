@@ -20,7 +20,7 @@
   <use   name="Geometry/TrackerGeometryBuilder"/>
   <use   name="CalibFormats/SiPixelObjects"/>
   <use   name="CalibTracker/SiPixelTools"/>
-  <library   file="*.cc" name="CalibTrackerSiPixelGainCalibrationPlugin">
+  <library   file="*.cc" name="SiPixelToolsGainCalibrationPlugin">
     <flags   EDM_PLUGIN="1"/>
   </library>
 </environment>
