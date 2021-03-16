@@ -24,7 +24,6 @@
 #include "Geometry/CommonTopologies/interface/PixelGeomDetType.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" 
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
-#include "DataFormats/SiPixelDetId/interface/PixelBarrelName.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelFrameConverter.h"
 #include "CondFormats/SiPixelObjects/interface/ElectronicIndex.h"
 #include "CondFormats/SiPixelObjects/interface/DetectorIndex.h"
