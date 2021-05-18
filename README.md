@@ -87,11 +87,11 @@ The last step is to produce the payload (a database object)
 ./run.py payload 2381 YEAR VERSION
 ```
 where YEAR is the year the calibration was taken and VERSION is the number of payloads produced in that year.
-After this is done, please notify the following people of the location of the database object
-Currently (this list might change)
-Danek Kotlinksi <danek.kotlinskiATpsi.ch>
-Tamás Vámi <vami.tamasATwigner.mta.hu>
-Tanja Susa <Tatjana.SusaATcern.ch>
+After this is done, please notify the following people of the location of the database object,
+currently (this list might change):
+Danek Kotlinksi <danek.kotlinskiATpsi.ch>,
+Tamás Vámi <vami.tamasATwigner.mta.hu>,
+Tanja Susa <Tatjana.SusaATcern.ch>.
 
 ## VCal database object
 To update the VCal database object, please see the [TWiki](https://twiki.cern.ch/twiki/bin/view/CMS/SiPixelGainCalibrationDoc#VCal_database_object).
