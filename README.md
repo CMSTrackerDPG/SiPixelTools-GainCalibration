@@ -16,7 +16,7 @@ cd ~/public/CMSSW/GainCalibrations/
 source $VO_CMS_SW_DIR/cmsset_default.sh
 export SCRAM_ARCH=slc7_amd64_gcc820
 cmsrel CMSSW_11_1_2
-cd CMSSW_11_1_2
+cd CMSSW_11_1_2/src
 cmsenv
 git clone https://github.com/CMSTrackerDPG/SiPixelTools-GainCalibration.git SiPixelTools/GainCalibration
 scram b -j 8
