@@ -27,7 +27,7 @@ cd SiPixelTools/GainCalibration/test
 If you want to run the gain calibration on a single FED, please use [`test/gain_calib_cfg.py`](test/gain_calib_cfg.py)
 For example, to run a test job, try
 ```
-cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_323203/GainCalibration_1200_323203.dmp ./
+cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_323203/GainCalibration_1205_323203.dmp ./
 cmsRun gain_calib_cfg.py run=323203 fed=1200
 ```
 
