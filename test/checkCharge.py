@@ -1,9 +1,9 @@
 import ROOT as rt
 from time import sleep 
-f1 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/DPGAnalysis-SiPixelTools/HitAnalyzer/scripts/digis_clus_323391_def.root","READ") #-- post PH optimisation DAC change
-f2 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/DPGAnalysis-SiPixelTools/HitAnalyzer/scripts/digis_clus_323391_v8.root","READ") #-- post PH optimisation DAC change
-f3 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/DPGAnalysis-SiPixelTools/HitAnalyzer/scripts/digis_clus_323416_def.root","READ") # -- old PH settings
-f4 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/DPGAnalysis-SiPixelTools/HitAnalyzer/scripts/digis_clus_323416_v7.root","READ") # -- old PH settings
+f1 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/SiPixelTools/HitAnalyzer/scripts/digis_clus_323391_def.root","READ") #-- post PH optimisation DAC change
+f2 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/SiPixelTools/HitAnalyzer/scripts/digis_clus_323391_v8.root","READ") #-- post PH optimisation DAC change
+f3 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/SiPixelTools/HitAnalyzer/scripts/digis_clus_323416_def.root","READ") # -- old PH settings
+f4 = rt.TFile.Open("/afs/cern.ch/user/d/dkotlins/public/CMSSW/CMSSW_10_2_0/src/SiPixelTools/HitAnalyzer/scripts/digis_clus_323416_v7.root","READ") # -- old PH settings
 
 hists = ['hcharge1',"hcharge2","hpixcharge1","hpixcharge2",'hcharge5','hcharge6','hcharge7']
 

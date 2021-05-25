@@ -41,7 +41,7 @@ process.siPixelDigis.InputLabel = 'source'
 process.siPixelDigis.UsePhase1 = cms.bool(True)
 
 # Digis --> Calib Digis
-process.load("DPGAnalysis-SiPixelTools.GainCalibration.SiPixelCalibDigiProducer_cfi")
+process.load("SiPixelTools.GainCalibration.SiPixelCalibDigiProducer_cfi")
 # Instead of the old calib.dat file, configure these factors here
 process.siPixelCalibDigis.Repeat = cms.int32(5)
 process.siPixelCalibDigis.CalibMode = cms.string('GainCalibration')
@@ -96,7 +96,7 @@ process.siPixelCalibDigis.calibrows_Int = cms.vint32(
     70, -1, 71, -1, 72, -1, 73, -1, 74, -1, 75, -1, 76, -1, 77, -1, 78, -1, 79, -1,
     )
 
-process.load("DPGAnalysis-SiPixelTools.GainCalibration.SiPixelGainCalibrationAnalysis_cfi")
+process.load("SiPixelTools.GainCalibration.SiPixelGainCalibrationAnalysis_cfi")
 process.siPixelGainCalibrationAnalysis.saveFile = True
 process.siPixelGainCalibrationAnalysis.savePixelLevelHists = True 
 process.siPixelGainCalibrationAnalysis.writeSummary = True 
