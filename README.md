@@ -28,7 +28,7 @@ If you want to run the gain calibration on a single FED, please use [`test/gain_
 For example, to run a test job, try
 ```
 cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_323203/GainCalibration_1205_323203.dmp ./
-cmsRun gain_calib_cfg.py run=323203 fed=1200
+cmsRun gain_calib_cfg.py run=323203 fed=1205
 ```
 
 ## Submission
