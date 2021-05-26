@@ -20,6 +20,7 @@ import FWCore.ParameterSet.Config as cms
 siPixelGainCalibrationAnalysis = cms.EDAnalyzer("SiPixelGainCalibrationAnalysis",
     saveFile = cms.untracked.bool(True),
     savePixelLevelHists = cms.untracked.bool(False),
+    saveFullPayloads = cms.untracked.bool(False),
     saveAllHistograms = cms.untracked.bool(False),
     listOfDetIDs = cms.untracked.vuint32(),                                         
     # try to create database. 'true' setting for expert use only.

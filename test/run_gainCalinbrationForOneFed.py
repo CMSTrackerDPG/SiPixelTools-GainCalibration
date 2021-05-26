@@ -9,7 +9,7 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('GainCa
 process.MessageLogger = cms.Service("MessageLogger",
     text_output = cms.untracked.PSet(threshold = cms.untracked.string('ERROR')),
     destinations = cms.untracked.vstring('text_output')
-    )
+)
 
 # GlobalTag
 #Phase0
@@ -31,14 +31,19 @@ process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 # process.source = cms.Source("PixelSLinkDataInputSource",
 process.source = cms.Source("PixelDumpDataInputSource",  # this is the version from DPGAnalysis, compile it!
     fedid = cms.untracked.int32(-1),
+    #fedid = cms.untracked.int32(1260), # P5 clean room
+    #fedid = cms.untracked.int32(1263), # PSI setup
     runNumber = cms.untracked.int32(-1),
-    fileNames = cms.untracked.vstring('file:/eos/home-d/dkotlins/GainsCalibration/GainCalibration_1200_323102.dmp'),
+    #fileNames = cms.untracked.vstring('file:/eos/home-d/dkotlins/GainsCalibration/GainCalibration_1200_323102.dmp'),
+    fileNames = cms.untracked.vstring('file:GainCalibration_1205_323203.dmp'),
     #firstLuminosityBlockForEachRun=cms.untracked.VLuminosityBlockID(*[cms.LuminosityBlockID(1,1)]),
     firstLuminosityBlockForEachRun=cms.untracked.VLuminosityBlockID(cms.LuminosityBlockID(1,1)),
-    )
+)
 
 process.siPixelDigis.InputLabel = 'source'
 process.siPixelDigis.UsePhase1 = cms.bool(True)
+#process.siPixelDigis.cpu.InputLabel = 'source' # for GPUs
+#process.siPixelDigis.cpu.UsePhase1 = cms.bool(True)
 
 # Digis --> Calib Digis
 process.load("SiPixelTools.GainCalibration.SiPixelCalibDigiProducer_cfi")
@@ -50,8 +55,8 @@ process.siPixelCalibDigis.CalibMode = cms.string('GainCalibration')
 process.siPixelCalibDigis.vCalValues_Int =  cms.vint32(
      6,  8, 10, 12, 14, 15, 16,  17,  18,  21,  24,  28,  35,  42, 49,
     56, 63, 70, 77, 84, 91, 98, 105, 112, 119, 126, 133, 140, 160
-    )
-# --> have to add -1 (as a separator) after every 3rd column
+)
+# --> have to add -1 (as a separator) after every 3rd column, older version 
 # process.siPixelCalibDigis.calibcols_Int = cms.vint32(
 #      0, 13, 26, -1,
 #     39,  1, 14, -1,
@@ -71,7 +76,8 @@ process.siPixelCalibDigis.vCalValues_Int =  cms.vint32(
 #     24, 37, 50, -1,
 #     12, 25, 38, -1,
 #     51,         -1,
-#     )
+#)
+# new version with 6 cols per event
 process.siPixelCalibDigis.calibcols_Int = cms.vint32(
     0  , 4  , 8  , 12 , 16 , 20 , -1,
     24 , 28 , 32 , 36 , 40 , 44 , -1,
@@ -82,7 +88,7 @@ process.siPixelCalibDigis.calibcols_Int = cms.vint32(
     42 , 46 , 50 , 3  , 7  , 11 , -1,
     15 , 19 , 23 , 27 , 31 , 35 , -1,
     39 , 43 , 47 , 51, -1,  
-    )
+)
     
 # --> have to add -1 (as a separator) after every row
 process.siPixelCalibDigis.calibrows_Int = cms.vint32(
@@ -94,8 +100,9 @@ process.siPixelCalibDigis.calibrows_Int = cms.vint32(
     50, -1, 51, -1, 52, -1, 53, -1, 54, -1, 55, -1, 56, -1, 57, -1, 58, -1, 59, -1,
     60, -1, 61, -1, 62, -1, 63, -1, 64, -1, 65, -1, 66, -1, 67, -1, 68, -1, 69, -1,
     70, -1, 71, -1, 72, -1, 73, -1, 74, -1, 75, -1, 76, -1, 77, -1, 78, -1, 79, -1,
-    )
+)
 
+# Cuts for analysis 
 process.load("SiPixelTools.GainCalibration.SiPixelGainCalibrationAnalysis_cfi")
 process.siPixelGainCalibrationAnalysis.saveFile = True
 process.siPixelGainCalibrationAnalysis.savePixelLevelHists = True 
@@ -111,10 +118,30 @@ process.siPixelGainCalibrationAnalysis.minChi2ProbforHistSave = cms.untracked.do
 process.siPixelGainCalibrationAnalysis.maxChi2InHist = cms.untracked.double(100.)
 #process.siPixelGainCalibrationAnalysis.maxGainInHist = cms.untracked.double(10.) # for old, no vcal
 process.siPixelGainCalibrationAnalysis.maxGainInHist = cms.untracked.double(500.) # for new, with vcal
+
+# Old VCal text files, not needed anymore in 2021
 #process.siPixelGainCalibrationAnalysis.vCalToEleConvFactors = cms.string("vcal-irradiation-factors_dummy.txt")            
 #process.siPixelGainCalibrationAnalysis.vCalToEleConvFactors = cms.string("vcal-irradiation-factors_2018.txt")            
 #process.siPixelGainCalibrationAnalysis.vCalToEleConvFactors = cms.string("vcal-calibration_nominal.txt")            
-process.siPixelGainCalibrationAnalysis.vCalToEleConvFactors = cms.string("vcal-calibration_2018.txt")            
+#process.siPixelGainCalibrationAnalysis.vCalToEleConvFactors = cms.string("vcal-calibration_2018.txt")        
+    
+# VCAL DB
+sqlfile = "siPixelVCal.db"
+process.VCalReader = cms.ESSource("PoolDBESSource",
+    #BlobStreamerName = cms.untracked.string('TBufferBlobStreamingService'),
+    DBParameters = cms.PSet(
+        messageLevel = cms.untracked.int32(0),
+        authenticationPath = cms.untracked.string('')
+    ),
+    connect = cms.string("sqlite_file:"+sqlfile),
+    toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string("SiPixelVCalRcd"),
+            tag = cms.string("SiPixelVCal_v1")
+        ),
+    ),
+)
+process.myprefer = cms.ESPrefer("PoolDBESSource","VCalReader")          
 
 # Path
 #process.p = cms.Path(process.siPixelDigis )

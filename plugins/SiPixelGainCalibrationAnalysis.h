@@ -134,6 +134,7 @@ private:
   std::ofstream summary_;
   uint32_t currentDetID_;
   int* statusNumbers_;
+  std::vector<std::string> statusInfo_;
   
 };
 

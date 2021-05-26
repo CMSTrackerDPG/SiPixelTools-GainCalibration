@@ -83,6 +83,9 @@ void SiPixelOfflineCalibAnalysisBase::beginRun(const edm::Run& iRun, const edm::
   edm::ESHandle<SiPixelVCal> siPixelVCal;
   iSetup.get<SiPixelVCalRcd>().get(siPixelVCal);
   
+  vCalValues_.clear(); // clear if multiple runs were called
+  calibcols.clear();
+  calibrows.clear();
   for(size_t i=0; i<vCalValues_Int_.size(); i++){
     vCalValues_.push_back( (short) vCalValues_Int_[i]);
   }
@@ -94,7 +97,7 @@ void SiPixelOfflineCalibAnalysisBase::beginRun(const edm::Run& iRun, const edm::
     calibrows.push_back( (short) calibrows_Int_[i]);
   }
   
-  std::cout << "Begin run. Loading calibration file. Mode: " << calibrationMode_ << " nTriggers: " << nTriggers_ << " Vcal steps: " << vCalValues_.size() << std::endl;
+  std::cout << "Begin run " << iRun.id().run() << ". Loading calibration file. Mode: " << calibrationMode_ << " nTriggers: " << nTriggers_ << " Vcal steps: " << vCalValues_.size() << std::endl;
   edm::LogInfo("SiPixelOfflineCalibAnalysisBase") << "Calibration file loaded. Mode: " << calibrationMode_ << " nTriggers: " << nTriggers_ << " Vcal steps: " << vCalValues_.size() << std::endl;
   //call calibrationSetup virtual function
   this->calibrationSetup(iSetup);

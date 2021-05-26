@@ -77,7 +77,17 @@ SiPixelGainCalibrationAnalysis::SiPixelGainCalibrationAnalysis(const edm::Parame
   statusNumbers_ = new int[10];
   for(int ii=0;ii<10;ii++)
     statusNumbers_[ii] = 0;
-  
+  statusInfo_ = { // information of status
+     "no status",                               // 0
+     "fit result OK",                           // 1
+     "too many plateau points",                 // 2
+     "no plateau",                              // 3
+     "less than 4 points",                      // 4
+     "chi2>"+std::to_string(chi2Threshold_),    // 5
+     "NaN slope or pedestal",                   // 6
+     "|slope|>"+std::to_string(maxGainInHist_), // 7
+     "npoints<2",                               // 8
+  };
 }
 
 SiPixelGainCalibrationAnalysis::~SiPixelGainCalibrationAnalysis(){ }
@@ -150,7 +160,9 @@ void SiPixelGainCalibrationAnalysis::printSummary(){
   summarytext << "Total Number of Pixel computed : " << statusNumbers_[9] << endl;
   summarytext << "Number of pixel tagged with status :" << endl;
   for(int ii=0;ii<9;ii++)
-    summarytext<<"  "<<ii<<" -> "<<statusNumbers_[ii]<<" ~ "<<double(statusNumbers_[ii])/double(statusNumbers_[9])*100.<<" %"<<endl;
+    summarytext<<"  "<<ii<<" -> "<<std::setw(5)<<statusNumbers_[ii]<<" ~ "<<std::setw(7)<<std::fixed<<std::setprecision(4)<<
+                                   double(statusNumbers_[ii])/double(statusNumbers_[9])*100.<<" %"<<
+                                   "  "<< statusInfo_[ii]<<endl;
   summarytext << "Gain minimum / average / maximum : " << gainlow_ << " / " << gainave_ << " / " << gainhi_ << endl;
   summarytext << "Pedestal minimum / average / maximum : " << pedlow_ << " / " << pedave_ << " / " << pedhi_ << endl;
   cout << summarytext.str() << endl;
@@ -401,7 +413,7 @@ bool SiPixelGainCalibrationAnalysis::doFits(uint32_t detid, std::vector<SiPixelC
     status = 3;
   if(nallpoints<4)
     status = -7;
-  if(TMath::Abs(slope>maxGainInHist_) || slope<0)
+  if(TMath::Abs(slope)>maxGainInHist_ || slope<0)
     status = -8;
   if(status!=1)
     makehistopersistent = true;

@@ -7,18 +7,19 @@ from Configuration.StandardSequences.Eras import eras
 # SETTINGS
 from FWCore.ParameterSet.VarParsing import VarParsing
 options   = VarParsing('analysis')
-options.register('run',  323203, mytype=VarParsing.varType.int)
-options.register('fed',  1200,   mytype=VarParsing.varType.int)
-options.register('verb', int,    mytype=VarParsing.varType.int)
+options.register('run',   323203, mytype=VarParsing.varType.int)
+options.register('fed',   1205,   mytype=VarParsing.varType.int)
+options.register('input', "",     mytype=VarParsing.varType.string)
+options.register('verb',  0,      mytype=VarParsing.varType.int)
 options.parseArguments()
 fed       = options.fed
 run       = options.run
 verbosity = options.verb
 era       = eras.Run2_2017
-globaltag = '100X_dataRun2_Express_v2'
+globaltag = 'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'
 ext       = 'dmp'
 sqlfile   = "siPixelVCal.db"
-dmpfile   = "GainCalibration_%s_%s.%s"%(fed,run,ext)
+dmpfile   = options.input or "GainCalibration_%s_%s.%s"%(fed,run,ext)
 
 # PRINT
 print ">>> %-10s = '%s'"%('era',era)
@@ -50,7 +51,8 @@ process.MessageLogger = cms.Service('MessageLogger',
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 from Configuration.AlCa.GlobalTag import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2017', '')
-process.GlobalTag.globaltag = globaltag
+process.GlobalTag = GlobalTag(process.GlobalTag, globaltag, '')
+#process.GlobalTag.globaltag = globaltag
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(-1)
@@ -62,13 +64,17 @@ process.load('Configuration.StandardSequences.RawToDigi_Data_cff')
 #process.source = cms.Source("PixelSLinkDataInputSource",
 process.source = cms.Source("PixelDumpDataInputSource",
     fedid = cms.untracked.int32(-1),
+    #fedid = cms.untracked.int32(1260), # P5 clean room
+    #fedid = cms.untracked.int32(1263), # PSI setup
     runNumber = cms.untracked.int32(500000),
     fileNames = cms.untracked.vstring("file:"+dmpfile),
     firstLuminosityBlock = cms.untracked.uint32(1),
     firstLuminosityBlockForEachRun = cms.untracked.VLuminosityBlockID(*lumiblocks),
 )
-process.siPixelDigis.InputLabel = 'source'
+process.siPixelDigis.InputLabel = 'source' # until CMSSW_11_2_0
 process.siPixelDigis.UsePhase1 = cms.bool(True)
+#process.siPixelDigis.cpu.InputLabel = 'source' # for GPU from CMSSW_11_3_0 on
+#process.siPixelDigis.cpu.UsePhase1 = cms.bool(True)
 
 # DIGIs --> CALIB DIGIs
 process.load("SiPixelTools.GainCalibration.SiPixelCalibDigiProducer_cfi")
@@ -77,11 +83,11 @@ process.siPixelCalibDigis.Repeat = cms.int32(5)
 process.siPixelCalibDigis.CalibMode = cms.string('GainCalibration')
 
 # VCAL VALUES
-process.siPixelCalibDigis.vCalValues_Int =  cms.vint32(
+process.siPixelCalibDigis.vCalValues_Int = cms.vint32(
      6,  8, 10, 12, 14, 15, 16,  17,  18,  21,  24,  28,  35,  42, 49,
     56, 63, 70, 77, 84, 91, 98, 105, 112, 119, 126, 133, 140, 160
 )
-# --> have to add -1 (as a separator) after every 3rd column
+# --> have to add -1 (as a separator) after every 3rd column, older version 
 # process.siPixelCalibDigis.calibcols_Int = cms.vint32(
 #      0, 13, 26, -1,
 #     39,  1, 14, -1,
@@ -102,6 +108,7 @@ process.siPixelCalibDigis.vCalValues_Int =  cms.vint32(
 #     12, 25, 38, -1,
 #     51,         -1,
 #)
+# new version with 6 cols per event
 process.siPixelCalibDigis.calibcols_Int = cms.vint32(
     0  , 4  , 8  , 12 , 16 , 20 , -1,
     24 , 28 , 32 , 36 , 40 , 44 , -1,
@@ -131,11 +138,15 @@ process.load("SiPixelTools.GainCalibration.SiPixelGainCalibrationAnalysis_cfi")
 process.load("Configuration.Geometry.GeometryRecoDB_cff")
 process.siPixelGainCalibrationAnalysis.saveFile = False
 process.siPixelGainCalibrationAnalysis.savePixelLevelHists = True 
+process.siPixelGainCalibrationAnalysis.saveFullPayloads = True
 process.siPixelGainCalibrationAnalysis.vCalValues_Int = process.siPixelCalibDigis.vCalValues_Int
 process.siPixelGainCalibrationAnalysis.calibcols_Int = process.siPixelCalibDigis.calibcols_Int
 process.siPixelGainCalibrationAnalysis.calibrows_Int = process.siPixelCalibDigis.calibrows_Int
 process.siPixelGainCalibrationAnalysis.Repeat = process.siPixelCalibDigis.Repeat
 process.siPixelGainCalibrationAnalysis.CalibMode = process.siPixelCalibDigis.CalibMode
+#process.siPixelGainCalibrationAnalysis.minChi2NDFforHistSave = cms.untracked.double(50.)
+#process.siPixelGainCalibrationAnalysis.minChi2ProbforHistSave = cms.untracked.double(1.E-30)
+#process.siPixelGainCalibrationAnalysis.maxChi2InHist = cms.untracked.double(100.)
 process.siPixelGainCalibrationAnalysis.phase1 = True
 if verbosity>=1:
   process.siPixelGainCalibrationAnalysis.writeSummary = True
@@ -144,7 +155,7 @@ if verbosity>=1:
 process.VCalReader = cms.ESSource("PoolDBESSource",
     #BlobStreamerName = cms.untracked.string('TBufferBlobStreamingService'),
     DBParameters = cms.PSet(
-        messageLevel = cms.untracked.int32(0),
+        messageLevel = cms.untracked.int32(verbosity),
         authenticationPath = cms.untracked.string('')
     ),
     connect = cms.string("sqlite_file:"+sqlfile),
