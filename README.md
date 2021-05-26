@@ -19,6 +19,7 @@ cmsrel CMSSW_11_2_0
 cd CMSSW_11_2_0/src
 cmsenv
 git clone https://github.com/CMSTrackerDPG/SiPixelTools-GainCalibration.git SiPixelTools/GainCalibration
+git clone https://github.com/CMSTrackerDPG/SiPixelTools-PixelDumpDataInputSource.git SiPixelTools/PixelDumpDataInputSource
 scram b -j 8
 cd SiPixelTools/GainCalibration/test
 ```
@@ -30,6 +31,7 @@ For example, to run a test job, try
 cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_323203/GainCalibration_1205_323203.dmp ./
 cmsRun gain_calib_cfg.py run=323203 fed=1205
 ```
+The output will be `GainCalibration.root`. Check `text_output.log` for errors.
 
 ## Submission
 To launch the gain calibration process, you need to use [`test/run.py`](test/run.py) script,

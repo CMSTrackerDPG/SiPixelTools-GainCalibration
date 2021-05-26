@@ -97,7 +97,7 @@ void SiPixelOfflineCalibAnalysisBase::beginRun(const edm::Run& iRun, const edm::
     calibrows.push_back( (short) calibrows_Int_[i]);
   }
   
-  std::cout << "Begin run " << iRun.id().run() << ". Loading calibration file. Mode: " << calibrationMode_ << " nTriggers: " << nTriggers_ << " Vcal steps: " << vCalValues_.size() << std::endl;
+  std::cout << "Begin Run " << iRun.id().run() << ". Loading calibration file. Mode: " << calibrationMode_ << " nTriggers: " << nTriggers_ << " Vcal steps: " << vCalValues_.size() << std::endl;
   edm::LogInfo("SiPixelOfflineCalibAnalysisBase") << "Calibration file loaded. Mode: " << calibrationMode_ << " nTriggers: " << nTriggers_ << " Vcal steps: " << vCalValues_.size() << std::endl;
   //call calibrationSetup virtual function
   this->calibrationSetup(iSetup);
