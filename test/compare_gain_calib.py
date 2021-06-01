@@ -9,13 +9,12 @@ import os, sys
 from math import log10
 import fnmatch # for glob wildcard '*'
 import ROOT; ROOT.PyConfig.IgnoreCommandLineOptions = True
-from ROOT import gROOT, gStyle, TFile, TCanvas, TLegend, \
+from ROOT import gROOT, gStyle, TFile, TCanvas, TLegend, TH2, \
                  kBlue, kRed, kGreen, kMagenta, kDashed
 gROOT.SetBatch(True)       # don't open GUI windows
 gStyle.SetOptTitle(False)  # don't make title on top of histogram
-#gStyle.SetOptStat(False)   # don't make stat. box
 gStyle.SetLineStyleString(kDashed,"30 30"); # make kDashed wider
-gStyle.SetOptStat('nemruo') # https://root.cern.ch/doc/master/classTStyle.html#a906e5f9060357a95f893701b3bed57a2
+#gStyle.SetOptStat(False)    # don't make stat. box
 
 
 def scalevec(a,b,r,log=False):
@@ -150,9 +149,8 @@ def gethists(file,hnames,verb=0):
   return hists
   
 
-def drawhists(pname,hists,**kwargs):
-  """Compare histograms."""
-  
+def draw(pname,hists,**kwargs):
+  """Compare 1D histograms."""
   tag     = kwargs.get('tag',    ""    )
   xtitle  = kwargs.get('xtitle', None  )
   ytitle  = kwargs.get('ytitle', None  )
@@ -161,6 +159,7 @@ def drawhists(pname,hists,**kwargs):
   header  = kwargs.get('header', ""    )
   norm    = kwargs.get('norm',   False )
   dividebybins = kwargs.get('dividebybins', False )
+  gStyle.SetOptStat('nemruo') # https://root.cern.ch/doc/master/classTStyle.html#a906e5f9060357a95f893701b3bed57a2
   hmargin = 2.0 if logy else 1.15
   tsize   = 0.045
   colors  = [ kBlue, kRed, kGreen+2, kMagenta ]
@@ -265,6 +264,50 @@ def drawhists(pname,hists,**kwargs):
   canvas.Close()
   
 
+def draw2d(pname,hist,xtitle=None,ytitle=None,ztitle=None,logz=False):
+  """Draw 2D histogram."""
+  gStyle.SetOptStat(False)
+  tsize = 0.045
+  xmin, xmax = hist.GetXaxis().GetXmin(), hist.GetXaxis().GetXmax()
+  ymin, ymax = hist.GetYaxis().GetXmin(), hist.GetYaxis().GetXmax()
+  canvas = TCanvas('canvas','canvas',100,100,900,800)
+  canvas.SetMargin(0.11,0.16,0.10,0.02) # LRBT
+  if logz:
+    canvas.SetLogz()
+  if xtitle!=None:
+    hist.GetXaxis().SetTitle(xtitle)
+  if ytitle!=None:
+    hist.GetYaxis().SetTitle(ytitle)
+  if ztitle!=None:
+    hist.GetZaxis().SetTitle(ztitle)
+  hist.GetXaxis().SetTitleSize(tsize)
+  hist.GetYaxis().SetTitleSize(tsize)
+  hist.GetZaxis().SetTitleSize(tsize)
+  hist.GetXaxis().SetLabelSize(0.9*tsize)
+  hist.GetYaxis().SetLabelSize(0.9*tsize)
+  hist.GetZaxis().SetLabelSize(0.9*tsize)
+  hist.GetXaxis().SetTitleOffset(1.04)
+  hist.GetYaxis().SetTitleOffset(1.14)
+  hist.GetZaxis().SetTitleOffset(1.08)
+  hist.Draw('COLZ')
+  canvas.RedrawAxis()
+  canvas.SaveAs(pname+".png")
+  canvas.SaveAs(pname+".pdf")
+  canvas.Close()
+  
+
+def countstatus(hist,statuses={ }):
+  """Compare status."""
+  for ix in range(1,hist.GetXaxis().GetNbins()+1):
+    for iy in range(1,hist.GetYaxis().GetNbins()+1):
+      status = hist.GetBinContent(ix,iy)
+      if status in statuses:
+        statuses[status] += 1
+      else:
+        statuses[status] = 1
+  return statuses
+  
+
 def compare(fname1,fname2,hnames,outdir="",verb=0):
   """Compare histograms."""
   title1, title2 = "Old", "New"
@@ -274,6 +317,7 @@ def compare(fname1,fname2,hnames,outdir="",verb=0):
     title2, fname2 = fname2.split('=')
   file1 = ensureTFile(fname1)
   file2 = ensureTFile(fname2)
+  statuses1, statuses2 = { }, { }
   ensuredir(outdir)
   #print getdirs(file1,"siPixelGainCalibrationAnalysis/Pixel/Barrel/*/*/*/*",verb=2)
   for searchhname in hnames:
@@ -288,14 +332,41 @@ def compare(fname1,fname2,hnames,outdir="",verb=0):
       hist2 = hists2[fullhname]
       pname = os.path.join(outdir,'_'.join(p.replace('_','') for p in fullhname.split('/')[2:]))
       pname = pname.replace("siPixelCalibDigis","_")
-      xtitle = hist1.GetTitle()
-      ytitle = "Pixels"
-      hist1.SetTitle(title1)
-      hist2.SetTitle(title2)
-      logx = False #"GainChi2Prob1d" in fullhname
-      drawhists(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False)
-      if "GainChi2NDF1d" in fullhname:
-        drawhists(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False,dividebybins=True,tag="_dividebybins")
+      if isinstance(hist1,TH2): # compare 2D
+        pname1 = "%s_%s"%(pname,title1.replace(' ',''))
+        pname2 = "%s_%s"%(pname,title2.replace(' ',''))
+        if "FitResult" in fullhname:
+          ztitle = "Status"
+          logz = False
+          statuses1 = countstatus(hist1,statuses1)
+          statuses2 = countstatus(hist2,statuses2)
+        else:
+          ztitle = None
+          logz = True
+        draw2d(pname1,hist1,ztitle=ztitle,logz=logz)
+        draw2d(pname2,hist2,ztitle=ztitle,logz=logz)
+      else: # compare 1D
+        xtitle = hist1.GetTitle()
+        ytitle = "Pixels"
+        hist1.SetTitle(title1)
+        hist2.SetTitle(title2)
+        logx = False #"GainChi2Prob1d" in fullhname
+        draw(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False)
+        if "GainChi2NDF1d" in fullhname:
+          draw(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False,dividebybins=True,tag="_dividebybins")
+  if statuses1 and statuses2:
+    print ">>> Compare status of fit result:"
+    ntot1 = sum(v for k,v in statuses1.iteritems())
+    ntot2 = sum(v for k,v in statuses2.iteritems())
+    print ">>> Total number of pixels: %d (%s), %d (%s)"%(ntot1,title1,ntot2,title2)
+    print ">>> %8s %16s %16s"%("Status",title1,title2)
+    for status in sorted(range(-11,11),key=lambda s: abs(s)):
+      if status not in statuses1 and status not in statuses1: continue
+      npix1 = statuses1.get(status,0)
+      npix2 = statuses2.get(status,0)
+      frac1 = 100.*npix1/ntot1
+      frac2 = 100.*npix2/ntot2
+      print ">>> %8s %8d %7.2f%% %8d %6.2f%%"%(status,npix1,frac1,npix2,frac2)
   
 
 def main(args):
@@ -314,13 +385,13 @@ def main(args):
     hdirs+"/GainLowPoint1d_*",
     hdirs+"/GainHighPoint1d_*",
     hdirs+"/GainNPoints1d_*",
+    hdirs+"/GainFitResult2d_*",
     #hdirs+"/Gain2d_*",
     #hdirs+"/ErrorGain2d_*",
     #hdirs+"/Pedestal2d_*",
     #hdirs+"/ErrorPedestal2d_*",
     #hdirs+"/GainChi2NDF2d_*",
     #hdirs+"/GainChi2Prob2d_*",
-    #hdirs+"/GainFitResult2d_*",
     #hdirs+"/GainDynamicRange2d_*",
     #hdirs+"/GainLowPoint2d_*",
     #hdirs+"/GainHighPoint2d_*",
@@ -342,4 +413,4 @@ if __name__ == "__main__":
                                               help="set verbosity, default=%(default)d, const=%(const)d" )
   args = parser.parse_args()
   main(args)
-  print "\n>>> Done."
+  print ">>>\n>>> Done."
