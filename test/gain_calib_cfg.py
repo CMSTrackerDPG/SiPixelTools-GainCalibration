@@ -7,13 +7,17 @@ from Configuration.StandardSequences.Eras import eras
 # SETTINGS
 from FWCore.ParameterSet.VarParsing import VarParsing
 options   = VarParsing('analysis')
-options.register('run',   323203, mytype=VarParsing.varType.int)
-options.register('fed',   1205,   mytype=VarParsing.varType.int)
-options.register('input', "",     mytype=VarParsing.varType.string)
-options.register('verb',  0,      mytype=VarParsing.varType.int)
+options.register('run',     323203, mytype=VarParsing.varType.int)
+options.register('fed',     1205,   mytype=VarParsing.varType.int)
+options.register('input',   "",     mytype=VarParsing.varType.string)
+options.register('minPVal', 0.05,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
+options.register('minChi2', 10.,    mytype=VarParsing.varType.float) # minChi2
+options.register('verb',    0,      mytype=VarParsing.varType.int)
 options.parseArguments()
 fed       = options.fed
 run       = options.run
+minPVal   = options.minPVal
+minChi2   = options.minChi2
 verbosity = options.verb
 era       = eras.Run2_2017
 globaltag = 'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'
@@ -24,6 +28,8 @@ dmpfile   = options.input or "GainCalibration_%s_%s.%s"%(fed,run,ext)
 # PRINT
 print ">>> %-10s = '%s'"%('era',era)
 print ">>> %-10s = '%s'"%('globaltag',globaltag)
+print ">>> %-10s = '%s'"%('minPVal',minPVal)
+print ">>> %-10s = '%s'"%('minChi2',minChi2)
 print ">>> %-10s = '%s'"%('sqlfile',sqlfile)
 print ">>> %-10s = '%s'"%('dmpfile',dmpfile)
 
@@ -144,9 +150,9 @@ process.siPixelGainCalibrationAnalysis.calibcols_Int = process.siPixelCalibDigis
 process.siPixelGainCalibrationAnalysis.calibrows_Int = process.siPixelCalibDigis.calibrows_Int
 process.siPixelGainCalibrationAnalysis.Repeat = process.siPixelCalibDigis.Repeat
 process.siPixelGainCalibrationAnalysis.CalibMode = process.siPixelCalibDigis.CalibMode
-#process.siPixelGainCalibrationAnalysis.minChi2NDFforHistSave = cms.untracked.double(50.)
-#process.siPixelGainCalibrationAnalysis.minChi2ProbforHistSave = cms.untracked.double(1.E-30)
-#process.siPixelGainCalibrationAnalysis.maxChi2InHist = cms.untracked.double(100.)
+process.siPixelGainCalibrationAnalysis.minChi2NDFforHistSave = cms.untracked.double(minChi2) # default 10.
+process.siPixelGainCalibrationAnalysis.minChi2ProbforHistSave = cms.untracked.double(minPVal) # default 0.05
+#process.siPixelGainCalibrationAnalysis.maxChi2InHist = cms.untracked.double(maxChi2) # default 25. for Run-2
 process.siPixelGainCalibrationAnalysis.phase1 = True
 if verbosity>=1:
   process.siPixelGainCalibrationAnalysis.writeSummary = True
