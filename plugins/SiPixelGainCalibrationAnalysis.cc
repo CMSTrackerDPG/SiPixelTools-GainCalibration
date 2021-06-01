@@ -77,18 +77,18 @@ SiPixelGainCalibrationAnalysis::SiPixelGainCalibrationAnalysis(const edm::Parame
   statusNumbers_ = new int[10];
   for(int ii=0;ii<10;ii++)
     statusNumbers_[ii] = 0;
-  std::ostringstream ss1, ss2;
-  ss1 << std::fixed << std::setprecision(1) << chi2Threshold_;
-  ss2 << std::fixed << std::setprecision(1) << maxGainInHist_;
+  std::ostringstream ss_chi2, ss_slope;
+  ss_chi2 << std::fixed << std::setprecision(1) << "chi2>" << chi2Threshold_ << " or p<" << std::defaultfloat << chi2ProbThreshold_;
+  ss_slope << std::fixed << std::setprecision(1) << "|slope|>" << maxGainInHist_;
   statusInfo_ = { // information of status
      "no status",               // 0
      "fit result OK",           // 1
      "too many plateau points", // 2
      "no plateau",              // 3
      "less than 4 points",      // 4
-     "chi2>"+ss1.str(),         // 5
+     ss_chi2.str(),             // 5
      "NaN slope or pedestal",   // 6
-     "|slope|>"+ss2.str(),      // 7
+     ss_slope.str(),            // 7
      "npoints<2",               // 8
   };
 }
