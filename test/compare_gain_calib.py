@@ -15,6 +15,7 @@ gROOT.SetBatch(True)       # don't open GUI windows
 gStyle.SetOptTitle(False)  # don't make title on top of histogram
 #gStyle.SetOptStat(False)   # don't make stat. box
 gStyle.SetLineStyleString(kDashed,"30 30"); # make kDashed wider
+gStyle.SetOptStat('nemruo') # https://root.cern.ch/doc/master/classTStyle.html#a906e5f9060357a95f893701b3bed57a2
 
 
 def scalevec(a,b,r,log=False):
@@ -152,11 +153,14 @@ def gethists(file,hnames,verb=0):
 def drawhists(pname,hists,**kwargs):
   """Compare histograms."""
   
+  tag     = kwargs.get('tag',    ""    )
   xtitle  = kwargs.get('xtitle', None  )
   ytitle  = kwargs.get('ytitle', None  )
   logx    = kwargs.get('logx',   False )
   logy    = kwargs.get('logy',   False )
   header  = kwargs.get('header', ""    )
+  norm    = kwargs.get('norm',   False )
+  dividebybins = kwargs.get('dividebybins', False )
   hmargin = 2.0 if logy else 1.15
   tsize   = 0.045
   colors  = [ kBlue, kRed, kGreen+2, kMagenta ]
@@ -164,6 +168,17 @@ def drawhists(pname,hists,**kwargs):
   lmargin, rmargin = 0.11, 0.04
   bmargin, tmargin = 0.12, 0.06
   width   = 0.45
+  if norm:
+    for hist in hists:
+      hint = hist.Integral()
+      if hint<=0: continue
+      hist.Scale(1./hint)
+  if dividebybins:
+    for hist in hists:
+      for i in range(1,hist.GetXaxis().GetNbins()+2):
+        bwidth = hist.GetXaxis().GetBinWidth(i)
+        hist.SetBinContent(i,hist.GetBinContent(i)/bwidth)
+        hist.SetBinError(i,hist.GetBinError(i)/bwidth)
   xmin = min(h.GetXaxis().GetXmin() for h in hists)
   xmax = max(h.GetXaxis().GetXmax() for h in hists)
   ymin = min(h.GetMinimum() for h in hists)
@@ -229,7 +244,7 @@ def drawhists(pname,hists,**kwargs):
   boxes = [ ]
   canvas.Update()
   x1, y1 = 0.99, 0.99
-  bwidth, bheight = 0.22, 0.11
+  bwidth, bheight = 0.22, 0.13
   for i, hist in enumerate(hists):
     box = hist.FindObject('stats')
     #print ytop, bheight
@@ -240,11 +255,13 @@ def drawhists(pname,hists,**kwargs):
     box.SetY2NDC(y1-bheight)
     box.SetX1NDC(x1)
     box.SetX2NDC(x1-bwidth)
-    y1 -= bheight + 0.02
+    box.SetLineColor(hist.GetLineColor())
+    box.SetTextColor(hist.GetLineColor())
+    y1 -= bheight + 0.01
     boxes.append(box)
   
-  canvas.SaveAs(pname+".png")
-  canvas.SaveAs(pname+".pdf")
+  canvas.SaveAs(pname+tag+".png")
+  canvas.SaveAs(pname+tag+".pdf")
   canvas.Close()
   
 
@@ -276,7 +293,9 @@ def compare(fname1,fname2,hnames,outdir="",verb=0):
       hist1.SetTitle(title1)
       hist2.SetTitle(title2)
       logx = False #"GainChi2Prob1d" in fullhname
-      drawhists(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True)
+      drawhists(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False)
+      if "GainChi2NDF1d" in fullhname:
+        drawhists(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False,dividebybins=True,tag="_dividebybins")
   
 
 def main(args):
