@@ -77,19 +77,20 @@ SiPixelGainCalibrationAnalysis::SiPixelGainCalibrationAnalysis(const edm::Parame
   statusNumbers_ = new int[10];
   for(int ii=0;ii<10;ii++)
     statusNumbers_[ii] = 0;
-  std::ostringstream ss_chi2, ss_slope;
-  ss_chi2 << std::fixed << std::setprecision(1) << "chi2>" << chi2Threshold_ << " or p<" << std::defaultfloat << chi2ProbThreshold_;
-  ss_slope << std::fixed << std::setprecision(1) << "|slope|>" << maxGainInHist_;
+  std::ostringstream ss_chi2, ss_prob, ss_slope;
+  ss_chi2 << std::fixed << std::setprecision(1) << "chi2>" << chi2Threshold_;
+  ss_prob << std::fixed << std::setprecision(1) << "p-value<" << std::defaultfloat << chi2ProbThreshold_;
+  ss_slope << std::fixed << std::setprecision(1) << "|slope|>" << maxGainInHist_ << " or slope < 0";
   statusInfo_ = { // information of status
      "no status",               // 0
      "fit result OK",           // 1
      "too many plateau points", // 2
      "no plateau",              // 3
-     "less than 4 points",      // 4
+     ss_prob.str(),             // 4
      ss_chi2.str(),             // 5
-     "NaN slope or pedestal",   // 6
-     ss_slope.str(),            // 7
-     "npoints<2",               // 8
+     "slope or pedestal is NaN",// 6
+     "nallpoints<4 or npoints<2",// 7
+     ss_slope.str(),            // 8
   };
 }
 
@@ -407,10 +408,10 @@ bool SiPixelGainCalibrationAnalysis::doFits(uint32_t detid, std::vector<SiPixelC
     }
     //return false;
   }
+  if(prob<chi2ProbThreshold_)
+    status = 4; //cout<<" prob "<<prob<<" "<<chi2ProbThreshold_<<endl;}
   if(chi2>chi2Threshold_ && chi2Threshold_>=0)
     status = 5; // cout<<" thr "<<chi2<<" "<<chi2Threshold_<<endl;}
-  if(prob<chi2ProbThreshold_)
-    status = 5; //cout<<" prob "<<prob<<" "<<chi2ProbThreshold_<<endl;}
   if(noPlateau)
     status = 3;
   if(nallpoints<4)
