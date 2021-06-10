@@ -5,8 +5,8 @@
 \documentclass[a4paper,10pt]{article}
 
 %\textwidth=19.3cm
-\usepackage{color,graphicx,subfigure}
-\usepackage{fullpage}
+\usepackage{color,graphicx,subfig}
+%\usepackage{fullpage} %doesn't compile
 \linespread{1.5} 
 %\usepackage{lineno}
 %\usepackage{fancyhdr}
@@ -24,6 +24,12 @@
 \ifthenelse{\DIFF = 1}{\def\high_gain_frac{0.5}}{\def\high_gain_frac{7}}
 
 
+%% Dirty Hack for subfigure replacement with subfig
+\newcommand{\subfigure}[1]{
+  \subfloat[][]{
+    #1
+  }
+}
 
 
 \begin{document}
