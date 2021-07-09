@@ -29,7 +29,7 @@ bool PrintAllFormats = false;
 bool printSummary = true;
 bool printTexSummary = true;
 
-double gain_max = 20;
+double gain_max = 20*50; // former value = 20 before VCal to #electrons DB object was included
 double ped_max = 250;
 
 // ******** Declaration of fonctions ********

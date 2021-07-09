@@ -35,7 +35,7 @@ void make_ComparisonPlots(TString fname="" , TString run="" , TString fname2="" 
     cout << "[log:diff_badFits] Could not open log file. Exiting ..." << endl;
     exit(1);
   }
-  double frac_flag_high_gain = 7; //flag pixels when gain is higher than this
+  double frac_flag_high_gain = 7*50; // old value without VCal to #elec conversion = 7; //flag pixels when gain is higher than this
   if(diff) frac_flag_high_gain = 0.5;
  
   TFile* file = TFile::Open(fname,"READ");
