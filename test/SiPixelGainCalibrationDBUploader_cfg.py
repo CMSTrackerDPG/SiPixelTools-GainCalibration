@@ -136,7 +136,7 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     ),
     toPut = cms.VPSet(
         cms.PSet(
-            record = cms.string('SiPixelGainCalibrationOfflineRcd'),
+            record = cms.string(process.gaincalDB.record.value()),#cms.string('SiPixelGainCalibrationOfflineRcd'),
             #tag = cms.string('GainCalib_offline_v2')
             tag = cms.string(tag)
         )
@@ -146,3 +146,5 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
 
 # PATH
 process.p = cms.Path(process.gaincalDB)
+
+#open('tmptmp.py', 'w').write(process.dumpPython())
