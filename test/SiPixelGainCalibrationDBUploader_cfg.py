@@ -15,7 +15,7 @@ options.register('file',      None, mytype=VarParsing.varType.string)
 options.parseArguments()
 phase      = 1
 gaincalDB  = options.gain
-era        = eras.Run2_2017
+era        = eras.Run3
 run        = options.run
 year       = options.year
 dbversion  = options.dbversion
@@ -68,14 +68,14 @@ elif phase==1:
   process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
   process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
   from Configuration.AlCa.GlobalTag import GlobalTag
-  process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
+  process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run3_data_prompt', '')
   #process.GlobalTag.globaltag = '100X_dataRun2_Express_v2'#'92X_dataRun2_Express_v7'
   #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run1_data', '')
 process.source = cms.Source("EmptyIOVSource",                            
     #lastRun = cms.untracked.uint32(1),
     timetype = cms.string('runnumber'),
-    firstValue = cms.uint64(run),
-    lastValue = cms.uint64(run),
+    firstValue = cms.uint64(300000), # cms.uint64(run),
+    lastValue = cms.uint64(300000), # cms.uint64(run),
     interval = cms.uint64(1)
 )
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(1))
