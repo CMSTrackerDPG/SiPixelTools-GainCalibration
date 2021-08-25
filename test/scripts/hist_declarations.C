@@ -48,7 +48,7 @@ TH1F* SUM_GainNPoints1d      = new TH1F("SUM_GainNPoints1d","SUM_GainNPoints1d",
 //----------------------------------------
 // Binning
 int nbin_gain    = 400; double xmin_gain    = 0,   xmax_gain    = 8*50; // Run 2: 8; Run 3: 8*50
-int nbin_errgain = 400; double xmin_errgain = 0,   xmax_errgain = 0.01*50;
+int nbin_errgain = 400; double xmin_errgain = 0,   xmax_errgain = 0.01/50;
 int nbin_ped     = 350; double xmin_ped     = -50, xmax_ped     = 250;
 int nbin_errped  = 350; double xmin_errped  = -1,  xmax_errped  = 1;
 if(diff){
@@ -128,43 +128,43 @@ TH2F* CorrelationGainPedFPix = new TH2F("CorrelationGainPedFPix","CorrelationGai
 // ******** ERRORS **********
 
 //Pixel Level 
-TH2F* CorrelationError = new TH2F("CorrelationError","CorrelationError;Error on 1/gain;Error on pedestal", nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped, xmin_errped, xmax_errped);
-TH2F* ErrorVsGain = new TH2F("ErrorVsGain","ErrorVsGain;Gain;Error on 1/gain", nbin_gain, xmin_gain, xmax_gain, nbin_errgain, xmin_errgain, xmax_errgain);
-TH2F* ErrorVsPedestal = new TH2F("ErrorVsPedestal","ErrorVsPedestal;Pedestal;Error on pedestal", nbin_ped, xmin_ped, xmax_ped, nbin_errped, xmin_errped, xmax_errped);
-TH2F* CorrelationErrorBPix = new TH2F("CorrelationErrorBPix","CorrelationErrorBPix;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainBPix = new TH2F("ErrorVsGainBPix","ErrorVsGainBPix;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalBPix = new TH2F("ErrorVsPedestalBPix","ErrorVsPedestalBPix;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
-TH2F* CorrelationErrorFPix = new TH2F("CorrelationErrorFPix","CorrelationErrorFPix;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainFPix = new TH2F("ErrorVsGainFPix","ErrorVsGainFPix;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalFPix = new TH2F("ErrorVsPedestalFPix","ErrorVsPedestalFPix;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
+TH2F* CorrelationError     =  new TH2F("CorrelationError"    ,"CorrelationError;Error on 1/gain;Error on pedestal"    ,nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGain          =  new TH2F("ErrorVsGain"         ,"ErrorVsGain;Gain;Error on 1/gain"                      ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestal      =  new TH2F("ErrorVsPedestal"     ,"ErrorVsPedestal;Pedestal;Error on pedestal"            ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
+TH2F* CorrelationErrorBPix =  new TH2F("CorrelationErrorBPix","CorrelationErrorBPix;Error on 1/gain;Error on pedestal",nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainBPix      =  new TH2F("ErrorVsGainBPix"     ,"ErrorVsGainBPix;Gain;Error on 1/gain"                  ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalBPix  =  new TH2F("ErrorVsPedestalBPix" ,"ErrorVsPedestalBPix;Pedestal;Error on pedestal"        ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
+TH2F* CorrelationErrorFPix =  new TH2F("CorrelationErrorFPix","CorrelationErrorFPix;Error on 1/gain;Error on pedestal",nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainFPix      =  new TH2F("ErrorVsGainFPix"     ,"ErrorVsGainFPix;Gain;Error on 1/gain"                  ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalFPix  =  new TH2F("ErrorVsPedestalFPix" ,"ErrorVsPedestalFPix;Pedestal;Error on pedestal"        ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
 
 //Column Level
-TH2F* CorrelationGainPedPerCol = new TH2F("CorrelationGainPedPerCol","CorrelationGainPedPerCol;Gain;Pedestal",nbin_gain,xmin_gain,xmax_gain,nbin_ped,xmin_ped,xmax_ped);
-TH2F* CorrelationErrorPerCol = new TH2F("CorrelationErrorPerCol","CorrelationErrorPerColPerCol;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainPerCol = new TH2F("ErrorVsGainPerCol","ErrorVsGainPerCol;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalPerCol = new TH2F("ErrorVsPedestalPerCol","ErrorVsPedestalPerCol;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
-TH2F* CorrelationGainPedPerColBPix = new TH2F("CorrelationGainPedPerColBPix","CorrelationGainPedPerColBPix;Gain;Pedestal",nbin_gain,xmin_gain,xmax_gain,nbin_ped,xmin_ped,xmax_ped);
-TH2F* CorrelationErrorPerColBPix = new TH2F("CorrelationErrorPerColBPix","CorrelationErrorPerColBPix;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainPerColBPix = new TH2F("ErrorVsGainPerColBPix","ErrorVsGainPerColBPix;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalPerColBPix = new TH2F("ErrorVsPedestalPerColBPix","ErrorVsPedestalPerColBPix;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
-TH2F* CorrelationGainPedPerColFPix = new TH2F("CorrelationGainPedPerColFPix","CorrelationGainPedPerColFPix;gain;pedestal",nbin_gain,xmin_gain,xmax_gain,nbin_ped,xmin_ped,xmax_ped);
-TH2F* CorrelationErrorPerColFPix = new TH2F("CorrelationErrorPerColFPix","CorrelationErrorPerColFPix;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainPerColFPix = new TH2F("ErrorVsGainPerColFPix","ErrorVsGainPerColFPix;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalPerColFPix = new TH2F("ErrorVsPedestalPerColFPix","ErrorVsPedestalPerColFPix;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
+TH2F* CorrelationGainPedPerCol     = new TH2F("CorrelationGainPedPerCol"    ,"CorrelationGainPedPerCol;Gain;Pedestal"                        ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_ped    , xmin_ped    , xmax_ped);
+TH2F* CorrelationErrorPerCol       = new TH2F("CorrelationErrorPerCol"      ,"CorrelationErrorPerColPerCol;Error on 1/gain;Error on pedestal",nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainPerCol            = new TH2F("ErrorVsGainPerCol"           ,"ErrorVsGainPerCol;Gain;Error on 1/gain"                        ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalPerCol        = new TH2F("ErrorVsPedestalPerCol"       ,"ErrorVsPedestalPerCol;Pedestal;Error on pedestal"              ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
+TH2F* CorrelationGainPedPerColBPix = new TH2F("CorrelationGainPedPerColBPix","CorrelationGainPedPerColBPix;Gain;Pedestal"                    ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_ped    , xmin_ped    , xmax_ped);
+TH2F* CorrelationErrorPerColBPix   = new TH2F("CorrelationErrorPerColBPix"  ,"CorrelationErrorPerColBPix;Error on 1/gain;Error on pedestal"  ,nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainPerColBPix        = new TH2F("ErrorVsGainPerColBPix"       ,"ErrorVsGainPerColBPix;Gain;Error on 1/gain"                    ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalPerColBPix    = new TH2F("ErrorVsPedestalPerColBPix"   ,"ErrorVsPedestalPerColBPix;Pedestal;Error on pedestal"          ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
+TH2F* CorrelationGainPedPerColFPix = new TH2F("CorrelationGainPedPerColFPix","CorrelationGainPedPerColFPix;gain;pedestal"                    ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_ped    , xmin_ped    , xmax_ped);
+TH2F* CorrelationErrorPerColFPix   = new TH2F("CorrelationErrorPerColFPix"  ,"CorrelationErrorPerColFPix;Error on 1/gain;Error on pedestal"  ,nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainPerColFPix        = new TH2F("ErrorVsGainPerColFPix"       ,"ErrorVsGainPerColFPix;Gain;Error on 1/gain"                    ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalPerColFPix    = new TH2F("ErrorVsPedestalPerColFPix"   ,"ErrorVsPedestalPerColFPix;Pedestal;Error on pedestal"          ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
 
 //ROC Level
-TH2F* CorrelationGainPedPerROC = new TH2F("CorrelationGainPedPerROC","CorrelationGainPedPerROC;Gain;Pedestal",nbin_gain,xmin_gain,xmax_gain,nbin_ped,xmin_ped,xmax_ped);
-TH2F* CorrelationErrorPerROC = new TH2F("CorrelationErrorPerROC","CorrelationErrorPerROC;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainPerROC = new TH2F("ErrorVsGainPerROC","ErrorVsGainPerROC;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalPerROC = new TH2F("ErrorVsPedestalPerROC","ErrorVsPedestalPerROC;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
-TH2F* CorrelationGainPedPerROCBPix = new TH2F("CorrelationGainPedPerROCBPix","CorrelationGainPedPerROCBPix;Gain;Pedestal",nbin_gain,xmin_gain,xmax_gain,nbin_ped,xmin_ped,xmax_ped);
-TH2F* CorrelationErrorPerROCBPix = new TH2F("CorrelationErrorPerROCBPix","CorrelationErrorPerROCBPix;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainPerROCBPix = new TH2F("ErrorVsGainPerROCBPix","ErrorVsGainPerROCBPix;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalPerROCBPix = new TH2F("ErrorVsPedestalPerROCBPix","ErrorVsPedestalPerROCBPix;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
-TH2F* CorrelationGainPedPerROCFPix = new TH2F("CorrelationGainPedPerROCFPix","CorrelationGainPedPerROCFPix;Gain;Pedestal",nbin_gain,xmin_gain,xmax_gain,nbin_ped,xmin_ped,xmax_ped);
-TH2F* CorrelationErrorPerROCFPix = new TH2F("CorrelationErrorPerROCFPix","CorrelationErrorPerROCFPix;Error on 1/gain;Error on pedestal",100,0,1,200,0,100);
-TH2F* ErrorVsGainPerROCFPix = new TH2F("ErrorVsGainPerROCFPix","ErrorVsGainPerROCFPix;Gain;Error on 1/gain",nbin_gain,xmin_gain,xmax_gain,100,0,1);
-TH2F* ErrorVsPedestalPerROCFPix = new TH2F("ErrorVsPedestalPerROCFPix","ErrorVsPedestalPerROCFPix;Pedestal;Error on pedestal",nbin_ped,xmin_ped,xmax_ped,200,0,100);
+TH2F* CorrelationGainPedPerROC     = new TH2F("CorrelationGainPedPerROC"    ,"CorrelationGainPedPerROC;Gain;Pedestal"                      ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_ped    , xmin_ped    , xmax_ped);
+TH2F* CorrelationErrorPerROC       = new TH2F("CorrelationErrorPerROC"      ,"CorrelationErrorPerROC;Error on 1/gain;Error on pedestal"    ,nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainPerROC            = new TH2F("ErrorVsGainPerROC"           ,"ErrorVsGainPerROC;Gain;Error on 1/gain"                      ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalPerROC        = new TH2F("ErrorVsPedestalPerROC"       ,"ErrorVsPedestalPerROC;Pedestal;Error on pedestal"            ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
+TH2F* CorrelationGainPedPerROCBPix = new TH2F("CorrelationGainPedPerROCBPix","CorrelationGainPedPerROCBPix;Gain;Pedestal"                  ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_ped    , xmin_ped    , xmax_ped);
+TH2F* CorrelationErrorPerROCBPix   = new TH2F("CorrelationErrorPerROCBPix"  ,"CorrelationErrorPerROCBPix;Error on 1/gain;Error on pedestal",nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainPerROCBPix        = new TH2F("ErrorVsGainPerROCBPix"       ,"ErrorVsGainPerROCBPix;Gain;Error on 1/gain"                  ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalPerROCBPix    = new TH2F("ErrorVsPedestalPerROCBPix"   ,"ErrorVsPedestalPerROCBPix;Pedestal;Error on pedestal"        ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
+TH2F* CorrelationGainPedPerROCFPix = new TH2F("CorrelationGainPedPerROCFPix","CorrelationGainPedPerROCFPix;Gain;Pedestal"                  ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_ped    , xmin_ped    , xmax_ped);
+TH2F* CorrelationErrorPerROCFPix   = new TH2F("CorrelationErrorPerROCFPix"  ,"CorrelationErrorPerROCFPix;Error on 1/gain;Error on pedestal",nbin_errgain, xmin_errgain, xmax_errgain, nbin_errped , xmin_errped , xmax_errped);
+TH2F* ErrorVsGainPerROCFPix        = new TH2F("ErrorVsGainPerROCFPix"       ,"ErrorVsGainPerROCFPix;Gain;Error on 1/gain"                  ,nbin_gain   , xmin_gain   , xmax_gain   , nbin_errgain, xmin_errgain, xmax_errgain);
+TH2F* ErrorVsPedestalPerROCFPix    = new TH2F("ErrorVsPedestalPerROCFPix"   ,"ErrorVsPedestalPerROCFPix;Pedestal;Error on pedestal"        ,nbin_ped    , xmin_ped    , xmax_ped    , nbin_errped , xmin_errped , xmax_errped);
 
 //Counting overflows for mean/RMS
 TOT_GainBPix->StatOverflows(kTRUE);
