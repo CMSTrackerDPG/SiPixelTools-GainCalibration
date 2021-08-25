@@ -10,8 +10,8 @@ options   = VarParsing('analysis')
 options.register('run',     323203, mytype=VarParsing.varType.int)
 options.register('fed',     1205,   mytype=VarParsing.varType.int)
 options.register('input',   "",     mytype=VarParsing.varType.string)
-options.register('minPVal', 0.05,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
-options.register('minChi2', 10.,    mytype=VarParsing.varType.float) # minChi2
+options.register('minPVal', 0.0,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
+options.register('minChi2', 500.,    mytype=VarParsing.varType.float) # minChi2
 options.register('verb',    0,      mytype=VarParsing.varType.int)
 options.parseArguments()
 fed       = options.fed
@@ -19,8 +19,8 @@ run       = options.run
 minPVal   = options.minPVal
 minChi2   = options.minChi2
 verbosity = options.verb
-era       = eras.Run2_2017
-globaltag = 'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'
+era       = eras.Run3 #eras.Run2_2017
+globaltag = 'auto:run3_data_prompt' #'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'
 ext       = 'dmp'
 sqlfile   = "siPixelVCal.db"
 dmpfile   = options.input or "GainCalibration_%s_%s.%s"%(fed,run,ext)
@@ -77,10 +77,10 @@ process.source = cms.Source("PixelDumpDataInputSource",
     firstLuminosityBlock = cms.untracked.uint32(1),
     firstLuminosityBlockForEachRun = cms.untracked.VLuminosityBlockID(*lumiblocks),
 )
-process.siPixelDigis.InputLabel = 'source' # until CMSSW_11_2_0
-process.siPixelDigis.UsePhase1 = cms.bool(True)
-#process.siPixelDigis.cpu.InputLabel = 'source' # for GPU from CMSSW_11_3_0 on
-#process.siPixelDigis.cpu.UsePhase1 = cms.bool(True)
+#process.siPixelDigis.InputLabel = 'source' # until CMSSW_11_2_0
+#process.siPixelDigis.UsePhase1 = cms.bool(True)
+process.siPixelDigis.cpu.InputLabel = 'source' # for GPU from CMSSW_11_3_0 on
+process.siPixelDigis.cpu.UsePhase1 = cms.bool(True)
 
 # DIGIs --> CALIB DIGIs
 process.load("SiPixelTools.GainCalibration.SiPixelCalibDigiProducer_cfi")
@@ -164,11 +164,13 @@ process.VCalReader = cms.ESSource("PoolDBESSource",
         messageLevel = cms.untracked.int32(verbosity),
         authenticationPath = cms.untracked.string('')
     ),
-    connect = cms.string("sqlite_file:"+sqlfile),
+    #connect = cms.string("sqlite_file:"+sqlfile),
+    connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),  # DB
     toGet = cms.VPSet(
         cms.PSet(
             record = cms.string("SiPixelVCalRcd"),
-            tag = cms.string("SiPixelVCal_v1")
+            #tag = cms.string("SiPixelVCal_v1")
+            tag = cms.string("SiPixelVCal_phase1_2021_v1")
         ),
     ),
 )
