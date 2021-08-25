@@ -1,5 +1,5 @@
 #! /bin/bash
-source /afs/cern.ch/cms/cmsset_default.sh
+source /cvmfs/cms.cern.ch/cmsset_default.sh
 function peval { echo -e ">>> $@"; eval "$@"; }
 
 mydir=CFGDIR

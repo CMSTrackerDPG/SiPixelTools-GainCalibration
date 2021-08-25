@@ -27,7 +27,7 @@ outfile="GainCalibration.root"
 
 # ENVIRONMENT
 echo ">>> Setting the environment..."
-peval "source /afs/cern.ch/cms/cmsset_default.sh"
+peval "source /cvmfs/cms.cern.ch/cmsset_default.sh"
 peval "cd $rundir"
 peval "eval `scramv1 runtime -sh`"
 
