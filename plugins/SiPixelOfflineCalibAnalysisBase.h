@@ -58,7 +58,7 @@
 
 #include "DataFormats/SiPixelDigi/interface/SiPixelCalibDigifwd.h"
 #include "DataFormats/SiPixelDigi/interface/SiPixelCalibDigi.h"
-#include "CondTools/SiPixel/test/SiPixelVCalDB.h"
+// #include "CondTools/SiPixel/interface/SiPixelVCalDB.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelVCal.h"
 
 #include "CondFormats/SiPixelObjects/interface/SiPixelCalibConfiguration.h"

@@ -19,7 +19,7 @@
 //
 //
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -29,7 +29,7 @@
 #include "CondFormats/SiPixelObjects/interface/PixelIndices.h"
 #include <string>
 
-  class SiPixelMCGainsFullBuilder : public edm::EDAnalyzer {
+  class SiPixelMCGainsFullBuilder : public edm::one::EDAnalyzer<> {
   public:
     explicit SiPixelMCGainsFullBuilder(const edm::ParameterSet& iConfig);
 
