@@ -26,6 +26,7 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "CalibTracker/SiPixelESProducers/interface/SiPixelGainCalibrationOfflineService.h"
 #include "CondFormats/SiPixelObjects/interface/PixelIndices.h"
+#include "CondFormats/SiPixelObjects/interface/SiPixelGainCalibrationOffline.h"
 #include <string>
 
   class SiPixelMCGainsOfflineBuilder : public edm::one::EDAnalyzer<> {
