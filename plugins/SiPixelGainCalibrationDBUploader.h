@@ -23,7 +23,11 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+//#if CMSSW_VERSION >= 123
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+//#else
+//#include "FWCore/Framework/interface/EDAnalyzer.h"
+//#endif
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -48,7 +52,12 @@
 // class decleration
 //
 
-class SiPixelGainCalibrationDBUploader : public edm::EDAnalyzer {
+//#if CMSSW_VERSION >= 123
+class SiPixelGainCalibrationDBUploader : public edm::one::EDAnalyzer<>
+//#else
+//class SiPixelGainCalibrationDBUploader : public edm::EDAnalyzer
+//#endif
+{
    public:
       explicit SiPixelGainCalibrationDBUploader(const edm::ParameterSet&);
       ~SiPixelGainCalibrationDBUploader();

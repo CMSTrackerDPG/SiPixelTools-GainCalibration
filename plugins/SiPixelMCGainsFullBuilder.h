@@ -24,7 +24,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-//#include "CondFormats/SiPixelObjects/interface/SiPixelGainCalibration.h"
+#include "CondFormats/SiPixelObjects/interface/SiPixelGainCalibration.h"
 #include "CalibTracker/SiPixelESProducers/interface/SiPixelGainCalibrationService.h"
 #include "CondFormats/SiPixelObjects/interface/PixelIndices.h"
 #include <string>

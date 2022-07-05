@@ -26,7 +26,11 @@ Implementation:
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-// #include "FWCore/Framework/interface/one/EDAnalyzer.h"
+//#if CMSSW_VERSION >= 123
+//#include "FWCore/Framework/interface/one/EDAnalyzer.h"
+//#else
+//#include "FWCore/Framework/interface/EDAnalyzer.h"
+//#endif
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -575,7 +579,7 @@ SiPixelGainCalibrationDBUploader::SiPixelGainCalibrationDBUploader(const edm::Pa
   theGainCalibrationDbInputOffline_(0),
   //theGainCalibrationDbInputPhase1Offline_(0),
   theGainCalibrationDbInputHLT_(0),
-  theGainCalibrationDbInputService_(iConfig),
+  theGainCalibrationDbInputService_(iConfig, consumesCollector()),
   record_(conf_.getUntrackedParameter<std::string>("record","SiPixelGainCalibrationOfflineRcd")),
   gainlow_(0.),gainhi_(1000.),pedlow_(conf_.getUntrackedParameter<double>("pedlow")),pedhi_(conf_.getUntrackedParameter<double>("pedhigh")),
   usemeanwhenempty_(conf_.getUntrackedParameter<bool>("useMeanWhenEmpty",false)),

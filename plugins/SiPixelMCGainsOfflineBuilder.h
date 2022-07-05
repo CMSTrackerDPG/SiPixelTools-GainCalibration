@@ -19,7 +19,11 @@
 //
 //
 #include "FWCore/Framework/interface/Frameworkfwd.h"
+#if CMSSW_VERSION >= 123
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
+#else
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#endif
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -29,7 +33,12 @@
 #include "CondFormats/SiPixelObjects/interface/SiPixelGainCalibrationOffline.h"
 #include <string>
 
-  class SiPixelMCGainsOfflineBuilder : public edm::one::EDAnalyzer<> {
+#if CMSSW_VERSION >= 123
+  class SiPixelMCGainsOfflineBuilder : public edm::one::EDAnalyzer<>
+#else
+  class SiPixelMCGainsOfflineBuilder : public edm::EDAnalyzer
+#endif
+  {
   public:
     explicit SiPixelMCGainsOfflineBuilder(const edm::ParameterSet& iConfig);
 

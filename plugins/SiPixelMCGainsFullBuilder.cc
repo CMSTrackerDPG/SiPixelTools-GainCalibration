@@ -22,7 +22,7 @@
     : conf_(iConfig),
       appendMode_(conf_.getUntrackedParameter<bool>("appendMode", true)),
       SiPixelGainCalibration_(0),
-      SiPixelGainCalibrationService_(iConfig),
+      SiPixelGainCalibrationService_(iConfig, consumesCollector()),
       recordName_(iConfig.getParameter<std::string>("record")),
       meanPed_(conf_.getParameter<double>("meanPed")),
       rmsPed_(conf_.getParameter<double>("rmsPed")),
