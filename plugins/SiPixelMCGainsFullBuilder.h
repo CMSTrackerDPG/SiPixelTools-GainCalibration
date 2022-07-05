@@ -27,6 +27,11 @@
 #include "CondFormats/SiPixelObjects/interface/SiPixelGainCalibration.h"
 #include "CalibTracker/SiPixelESProducers/interface/SiPixelGainCalibrationService.h"
 #include "CondFormats/SiPixelObjects/interface/PixelIndices.h"
+#include "Geometry/CommonTopologies/interface/PixelGeomDetUnit.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" 
+#include "Geometry/CommonTopologies/interface/PixelTopology.h"
+#include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include <string>
 
   class SiPixelMCGainsFullBuilder : public edm::one::EDAnalyzer<> {
@@ -60,6 +65,9 @@
     double electronsPerVcal_Offset_;
     double electronsPerVcal_L1_;
     double electronsPerVcal_L1_Offset_;
+
+    edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
+    edm::ESGetToken<TrackerTopology, TrackerTopologyRcd> trackerTopoToken_;
 
     // Internal class
     class CalParameters {

@@ -106,4 +106,5 @@ class SiPixelGainCalibrationDBUploader : public edm::one::EDAnalyzer<>
   size_t nmaxrows;
   int countModulesFound;
   int badPed_, emptyPed_,badGain_,emptyGain_; 
+  edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
 };

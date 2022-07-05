@@ -19,11 +19,11 @@
 //
 //
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#if CMSSW_VERSION >= 123
+//#if CMSSW_VERSION >= 123
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
-#else
-#include "FWCore/Framework/interface/EDAnalyzer.h"
-#endif
+//#else
+//#include "FWCore/Framework/interface/EDAnalyzer.h"
+//#endif
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -31,13 +31,18 @@
 #include "CalibTracker/SiPixelESProducers/interface/SiPixelGainCalibrationOfflineService.h"
 #include "CondFormats/SiPixelObjects/interface/PixelIndices.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelGainCalibrationOffline.h"
+#include "Geometry/CommonTopologies/interface/PixelGeomDetUnit.h"
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" 
+#include "Geometry/CommonTopologies/interface/PixelTopology.h"
+#include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include <string>
 
-#if CMSSW_VERSION >= 123
+//#if CMSSW_VERSION >= 123
   class SiPixelMCGainsOfflineBuilder : public edm::one::EDAnalyzer<>
-#else
-  class SiPixelMCGainsOfflineBuilder : public edm::EDAnalyzer
-#endif
+//#else
+//  class SiPixelMCGainsOfflineBuilder : public edm::EDAnalyzer
+//#endif
   {
   public:
     explicit SiPixelMCGainsOfflineBuilder(const edm::ParameterSet& iConfig);
@@ -75,6 +80,9 @@
     double electronsPerVcal_Offset_;
     double electronsPerVcal_L1_;
     double electronsPerVcal_L1_Offset_;
+
+    edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
+    edm::ESGetToken<TrackerTopology, TrackerTopologyRcd> trackerTopoToken_;
 
     // Internal class
     class CalParameters {

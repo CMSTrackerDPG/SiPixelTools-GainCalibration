@@ -152,8 +152,10 @@ void SiPixelGainCalibrationDBUploader::fillDatabase(const edm::EventSetup& iSetu
   uint32_t nmodules=0;
   uint32_t detid=0;
   therootfile_->cd();
+  trackerGeomToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>();
   edm::ESHandle<TrackerGeometry> pDD;
-  iSetup.get<TrackerDigiGeometryRecord>().get( pDD );     
+  //iSetup.get<TrackerDigiGeometryRecord>().get( pDD );     
+  pDD = iSetup.getHandle(trackerGeomToken_);
   std::cout<<"SiPixelCondObjOfflineBuilder" <<" There are "<<pDD->dets().size() <<" detectors"<<std::endl;
   std::cout << "Start looping on detids, there are " << bookkeeper_.size() << " histograms to consider..." << std::endl;
   
@@ -281,7 +283,9 @@ void SiPixelGainCalibrationDBUploader::fillDatabase(const edm::EventSetup& iSetu
         gains[jrow]=badgainval;
         float ped = tempped->GetBinContent(icol,jrow);
         float gain = tempgain->GetBinContent(icol,jrow);
+        #ifdef Tree
         float chi2 = tempchi2->GetBinContent(icol,jrow);
+        #endif
         float fitresult = tempfitresult->GetBinContent(icol,jrow);
         if(gain>500.) std::cout<<gain<<" "<<fitresult<<std::endl;
         if(ped>pedlow_ && gain>gainlow_ && ped<pedhi_ && gain<gainhi_ && (fitresult>0)){

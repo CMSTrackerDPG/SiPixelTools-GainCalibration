@@ -37,7 +37,9 @@
     electronsPerVcal_(conf_.getUntrackedParameter<double>("ElectronsPerVcal",1.)),
     electronsPerVcal_Offset_(conf_.getUntrackedParameter<double>("ElectronsPerVcal_Offset",0.)),
     electronsPerVcal_L1_(conf_.getUntrackedParameter<double>("ElectronsPerVcal_L1",1.)),
-    electronsPerVcal_L1_Offset_(conf_.getUntrackedParameter<double>("ElectronsPerVcal_L1_Offset",0.))
+    electronsPerVcal_L1_Offset_(conf_.getUntrackedParameter<double>("ElectronsPerVcal_L1_Offset",0.)),
+    trackerGeomToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()),
+    trackerTopoToken_(esConsumes<TrackerTopology, TrackerTopologyRcd>())
     
   {
     ::putenv((char*)"CORAL_AUTH_USER=me");
@@ -66,11 +68,13 @@
     SiPixelGainCalibration_ = new SiPixelGainCalibration(minped, maxped, mingain, maxgain);
 
     edm::ESHandle<TrackerGeometry> pDD;
-    iSetup.get<TrackerDigiGeometryRecord>().get(pDD);
+    //iSetup.get<TrackerDigiGeometryRecord>().get(pDD);
+    pDD = iSetup.getHandle(trackerGeomToken_);
     edm::LogInfo("SiPixelMCGainsFullBuilder") << " There are " << pDD->dets().size() << " detectors" << std::endl;
    //Retrieve tracker topology from geometry
     edm::ESHandle<TrackerTopology> tTopo;
-    iSetup.get<TrackerTopologyRcd>().get(tTopo);
+    //iSetup.get<TrackerTopologyRcd>().get(tTopo);
+    tTopo = iSetup.getHandle(trackerTopoToken_);//.product();
     //const TrackerTopology* tt = tTopo.product();
 
     for (TrackerGeometry::DetContainer::const_iterator it = pDD->dets().begin(); it != pDD->dets().end(); it++) {
