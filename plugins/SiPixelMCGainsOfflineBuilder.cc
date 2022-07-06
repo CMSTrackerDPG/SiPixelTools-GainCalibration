@@ -259,11 +259,13 @@
 
     try {
       if (mydbservice->isNewTagRequest(recordName_.c_str())) {
-        mydbservice->createNewIOV<SiPixelGainCalibrationOffline>(
-            SiPixelGainCalibration_, mydbservice->beginOfTime(), mydbservice->endOfTime(), recordName_.c_str());
+        //mydbservice->createNewIOV<SiPixelGainCalibrationOffline>(
+        //    SiPixelGainCalibration_, mydbservice->beginOfTime(), mydbservice->endOfTime(), recordName_.c_str());
+        mydbservice->createOneIOV<SiPixelGainCalibrationOffline>(
+            *SiPixelGainCalibration_, mydbservice->beginOfTime(), recordName_.c_str());
       } else {
-        mydbservice->appendSinceTime<SiPixelGainCalibrationOffline>(
-            SiPixelGainCalibration_, mydbservice->currentTime(), recordName_.c_str());
+        mydbservice->appendOneIOV<SiPixelGainCalibrationOffline>(
+            *SiPixelGainCalibration_, mydbservice->currentTime(), recordName_.c_str());
       }
       edm::LogInfo(" --- all OK");
     } catch (const cond::Exception& er) {

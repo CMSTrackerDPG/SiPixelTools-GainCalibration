@@ -511,14 +511,18 @@ void SiPixelGainCalibrationDBUploader::fillDatabase(const edm::EventSetup& iSetu
     if(record_=="SiPixelGainCalibrationForHLTRcd") {
       std::cout << "now doing SiPixelGainCalibrationForHLTRcd payload..." << std::endl;
       if( mydbservice->isNewTagRequest(record_) ) {
-        mydbservice->createNewIOV<SiPixelGainCalibrationForHLT>(
-                                    theGainCalibrationDbInputHLT_,
+        //mydbservice->createNewIOV<SiPixelGainCalibrationForHLT>(
+        //                            theGainCalibrationDbInputHLT_,
+        //                                  mydbservice->beginOfTime(),
+        //                            mydbservice->endOfTime(),
+        //                            "SiPixelGainCalibrationForHLTRcd");
+        mydbservice->createOneIOV<SiPixelGainCalibrationForHLT>(
+                                    *theGainCalibrationDbInputHLT_,
                                           mydbservice->beginOfTime(),
-                                    mydbservice->endOfTime(),
                                     "SiPixelGainCalibrationForHLTRcd");
       } else {
-        mydbservice->appendSinceTime<SiPixelGainCalibrationForHLT>(
-                                   theGainCalibrationDbInputHLT_, 
+        mydbservice->appendOneIOV<SiPixelGainCalibrationForHLT>(
+                                   *theGainCalibrationDbInputHLT_, 
                                    mydbservice->currentTime(),
                                    "SiPixelGainCalibrationForHLTRcd");
       
@@ -526,28 +530,26 @@ void SiPixelGainCalibrationDBUploader::fillDatabase(const edm::EventSetup& iSetu
     } else if (record_=="SiPixelGainCalibrationOfflineRcd") {
       std::cout << "now doing SiPixelGainCalibrationOfflineRcd payload..." << std::endl; 
       if( mydbservice->isNewTagRequest(record_) ) {
-        mydbservice->createNewIOV<SiPixelGainCalibrationOffline>(
-                                  theGainCalibrationDbInputOffline_,
+        mydbservice->createOneIOV<SiPixelGainCalibrationOffline>(
+                                  *theGainCalibrationDbInputOffline_,
                                   mydbservice->beginOfTime(),
-                                  mydbservice->endOfTime(),
                                   "SiPixelGainCalibrationOfflineRcd");
       } else {
-        mydbservice->appendSinceTime<SiPixelGainCalibrationOffline>(
-                                 theGainCalibrationDbInputOffline_, 
+        mydbservice->appendOneIOV<SiPixelGainCalibrationOffline>(
+                                 *theGainCalibrationDbInputOffline_, 
                                  mydbservice->currentTime(),
                                  "SiPixelGainCalibrationOfflineRcd");
       }
     } else if (record_=="SiPixelGainCalibrationRcd") {
       std::cout << "now doing SiPixelGainCalibrationRcd payload..." << std::endl; 
       if( mydbservice->isNewTagRequest(record_) ) {
-        mydbservice->createNewIOV<SiPixelGainCalibration>(
-                                                             theGainCalibrationDbInput_,
+        mydbservice->createOneIOV<SiPixelGainCalibration>(
+                                                             *theGainCalibrationDbInput_,
                                                              mydbservice->beginOfTime(),
-                                                             mydbservice->endOfTime(),
                                                              "SiPixelGainCalibrationRcd");
       } else {
-        mydbservice->appendSinceTime<SiPixelGainCalibration>(
-                                                             theGainCalibrationDbInput_, 
+        mydbservice->appendOneIOV<SiPixelGainCalibration>(
+                                                             *theGainCalibrationDbInput_, 
                                                              mydbservice->currentTime(),
                                                              "SiPixelGainCalibrationRcd");
       }
