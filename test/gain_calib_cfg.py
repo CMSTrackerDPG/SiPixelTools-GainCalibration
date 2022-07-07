@@ -1,5 +1,5 @@
 #! /usr/bin/env cmsRun
-print ">>> %s start gain_calib.py %s"%('-'*16,'-'*15)
+print(">>> %s start gain_calib.py %s"%('-'*16,'-'*15))
 import os
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
@@ -7,7 +7,7 @@ from Configuration.StandardSequences.Eras import eras
 # SETTINGS
 from FWCore.ParameterSet.VarParsing import VarParsing
 options   = VarParsing('analysis')
-options.register('run',     323203, mytype=VarParsing.varType.int)
+options.register('run',     14, mytype=VarParsing.varType.int)
 options.register('fed',     1205,   mytype=VarParsing.varType.int)
 options.register('input',   "",     mytype=VarParsing.varType.string)
 options.register('minPVal', 0.0,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
@@ -26,12 +26,12 @@ sqlfile   = "siPixelVCal.db"
 dmpfile   = options.input or "GainCalibration_%s_%s.%s"%(fed,run,ext)
 
 # PRINT
-print ">>> %-10s = '%s'"%('era',era)
-print ">>> %-10s = '%s'"%('globaltag',globaltag)
-print ">>> %-10s = '%s'"%('minPVal',minPVal)
-print ">>> %-10s = '%s'"%('minChi2',minChi2)
-print ">>> %-10s = '%s'"%('sqlfile',sqlfile)
-print ">>> %-10s = '%s'"%('dmpfile',dmpfile)
+print(">>> %-10s = '%s'"%('era',era))
+print(">>> %-10s = '%s'"%('globaltag',globaltag))
+print(">>> %-10s = '%s'"%('minPVal',minPVal))
+print(">>> %-10s = '%s'"%('minChi2',minChi2))
+print(">>> %-10s = '%s'"%('sqlfile',sqlfile))
+print(">>> %-10s = '%s'"%('dmpfile',dmpfile))
 
 # CHECK
 if not os.path.isfile(sqlfile):
@@ -179,4 +179,4 @@ process.myprefer = cms.ESPrefer("PoolDBESSource","VCalReader")
 # PATH
 process.p = cms.Path(process.siPixelDigis * process.siPixelCalibDigis * process.siPixelGainCalibrationAnalysis )
 
-print ">>> %s done gain_calib.py %s"%('-'*16,'-'*16)
+print(">>> %s done gain_calib.py %s"%('-'*16,'-'*16))

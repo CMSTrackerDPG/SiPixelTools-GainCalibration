@@ -28,7 +28,7 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 //#include "FWCore/Framework/interface/EventSetup.h"
@@ -73,7 +73,7 @@
 //
 
 
-class SiPixelOfflineCalibAnalysisBase : public edm::EDAnalyzer {
+class SiPixelOfflineCalibAnalysisBase : public edm::one::EDAnalyzer {
 public:
   explicit SiPixelOfflineCalibAnalysisBase(const edm::ParameterSet&); 
   ~SiPixelOfflineCalibAnalysisBase();
