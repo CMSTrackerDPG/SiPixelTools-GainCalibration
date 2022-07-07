@@ -23,6 +23,8 @@
 #include "Geometry/CommonTopologies/interface/PixelGeomDetUnit.h"
 #include "Geometry/CommonTopologies/interface/PixelGeomDetType.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" 
+#include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h" 
 #include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelFrameConverter.h"
 #include "CondFormats/SiPixelObjects/interface/ElectronicIndex.h"
@@ -56,6 +58,10 @@ SiPixelOfflineCalibAnalysisBase::SiPixelOfflineCalibAnalysisBase(const edm::Para
    calibrows_Int_ = iConfig.getParameter<std::vector<int> >("calibrows_Int");
    folderMaker_ = new SiPixelFolderOrganizerGC();
    phase1_ = iConfig.getUntrackedParameter<bool>("phase1",false);
+   trackerGeomToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>();
+   cablingMapToken_ = esConsumes<SiPixelFedCablingMap, SiPixelFedCablingMapRcd>();
+   SiPixelVCalToken_ = esConsumes<SiPixelVCal, SiPixelVCalRcd>();
+   trackerTopoToken_ = esConsumes<TrackerTopology, TrackerTopologyRcd>();
 }
 
 SiPixelOfflineCalibAnalysisBase::SiPixelOfflineCalibAnalysisBase(){
@@ -78,10 +84,13 @@ SiPixelOfflineCalibAnalysisBase::~SiPixelOfflineCalibAnalysisBase() { }
 void SiPixelOfflineCalibAnalysisBase::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup){
   // Load the calibration information from the database
   //iSetup.get<SiPixelCalibConfigurationRcd>().get(calib_);
-  iSetup.get<TrackerDigiGeometryRecord>().get( geom_ );
-  iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
+  //iSetup.get<TrackerDigiGeometryRecord>().get( geom_ );
+  geom_ = iSetup.getHandle(trackerGeomToken_);
+  //iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
+  theCablingMap_ = iSetup.getHandle(cablingMapToken_);
   edm::ESHandle<SiPixelVCal> siPixelVCal;
-  iSetup.get<SiPixelVCalRcd>().get(siPixelVCal);
+  //iSetup.get<SiPixelVCalRcd>().get(siPixelVCal);
+  siPixelVCal = iSetup.getHandle(SiPixelVCalToken_);
   
   vCalValues_.clear(); // clear if multiple runs were called
   calibcols.clear();
@@ -117,11 +126,14 @@ void SiPixelOfflineCalibAnalysisBase::beginRun(const edm::Run& iRun, const edm::
 // ------------ method called to for each event  ------------
 void SiPixelOfflineCalibAnalysisBase::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup){
   using namespace edm;
-  iSetup.get<TrackerDigiGeometryRecord>().get( geom_ );
-  iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
+  //iSetup.get<TrackerDigiGeometryRecord>().get( geom_ );
+  geom_ = iSetup.getHandle(trackerGeomToken_);
+  //iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
+  theCablingMap_ = iSetup.getHandle(cablingMapToken_);
   //iSetup.get<SiPixelCalibConfigurationRcd>().get(calib_);
   edm::ESHandle<TrackerTopology> tTopo;
-  iSetup.get<TrackerTopologyRcd>().get(tTopo);
+  //iSetup.get<TrackerTopologyRcd>().get(tTopo);
+  tTopo = iSetup.getHandle(trackerTopoToken_);//.product();
   tt_ = tTopo.product();
   
   if(eventCounter_==0)

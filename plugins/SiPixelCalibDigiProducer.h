@@ -42,6 +42,8 @@
 #include "DataFormats/SiPixelDigi/interface/SiPixelCalibDigiError.h"
 
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "Geometry/CommonTopologies/interface/PixelGeomDetUnit.h"
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelCalibConfiguration.h"
 #include "CondFormats/DataRecord/interface/SiPixelCalibConfigurationRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelFedCablingMapRcd.h"
@@ -53,7 +55,7 @@
 // class decleration
 //
 
-class SiPixelCalibDigiProducer : public edm::one::EDProducer {
+class SiPixelCalibDigiProducer : public edm::one::EDProducer<> {
 //class SiPixelCalibDigiProducer : public edm::EDProducer {
    public:
       explicit SiPixelCalibDigiProducer(const edm::ParameterSet& iConfig);
@@ -99,6 +101,9 @@ class SiPixelCalibDigiProducer : public edm::one::EDProducer {
 
       std::vector<std::pair<short,short> > currentpattern_;// keeps track of which pattern we are at
       std::pair<short,short> currentpair_;//worker class to keep track of pairs
+
+      edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
+      edm::ESGetToken<SiPixelFedCablingMap, SiPixelFedCablingMapRcd> cablingMapToken_;
 };
 
 

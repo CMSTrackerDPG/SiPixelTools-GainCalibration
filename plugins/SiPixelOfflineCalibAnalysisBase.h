@@ -31,7 +31,7 @@
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
-//#include "FWCore/Framework/interface/EventSetup.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -52,7 +52,11 @@
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/DetId/interface/DetId.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+#include "Geometry/CommonTopologies/interface/PixelGeomDetUnit.h"
+#include "Geometry/CommonTopologies/interface/PixelTopology.h"
+#include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelFedCablingMap.h"
+#include "DataFormats/TrackerCommon/interface/TrackerTopology.h"
 #include "DataFormats/TrackerCommon/interface/PixelEndcapName.h"
 #include "DataFormats/TrackerCommon/interface/PixelBarrelName.h"
 
@@ -62,10 +66,13 @@
 #include "CondFormats/SiPixelObjects/interface/SiPixelVCal.h"
 
 #include "CondFormats/SiPixelObjects/interface/SiPixelCalibConfiguration.h"
+#include "CondFormats/SiPixelObjects/interface/SiPixelFedCablingMap.h"
+#include "CondFormats/DataRecord/interface/SiPixelFedCablingMapRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelCalibConfigurationRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelFedCablingMapRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelVCalRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelVCalSimRcd.h"
+
 
 
 //
@@ -73,7 +80,7 @@
 //
 
 
-class SiPixelOfflineCalibAnalysisBase : public edm::one::EDAnalyzer {
+class SiPixelOfflineCalibAnalysisBase : public edm::one::EDAnalyzer<> {
 public:
   explicit SiPixelOfflineCalibAnalysisBase(const edm::ParameterSet&); 
   ~SiPixelOfflineCalibAnalysisBase();
@@ -185,6 +192,10 @@ private:
   // checkPixel returns whether a particular pixel is to be expected during the entire run..
   bool checkPixel(uint32_t detid, short row, short column);
   
+  edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
+  edm::ESGetToken<SiPixelFedCablingMap, SiPixelFedCablingMapRcd> cablingMapToken_;
+  edm::ESGetToken<SiPixelVCal, SiPixelVCalRcd> SiPixelVCalToken_;
+  edm::ESGetToken<TrackerTopology, TrackerTopologyRcd> trackerTopoToken_;
 };
 
 #endif

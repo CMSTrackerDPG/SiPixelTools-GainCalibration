@@ -61,7 +61,9 @@ SiPixelCalibDigiProducer::SiPixelCalibDigiProducer(const edm::ParameterSet& iCon
   errorType(iConfig.getUntrackedParameter<int>("errorTypeNumber",1)),
   conf_(iConfig),
   number_of_pixels_per_pattern_(0),
-  use_realeventnumber_(iConfig.getParameter<bool>("useRealEventNumber"))
+  use_realeventnumber_(iConfig.getParameter<bool>("useRealEventNumber")),
+  trackerGeomToken_(esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>()),
+  cablingMapToken_(esConsumes<SiPixelFedCablingMap, SiPixelFedCablingMapRcd>())
 
 {
   tPixelDigi = consumes<edm::DetSetVector<PixelDigi>> (src_);
@@ -284,8 +286,10 @@ SiPixelCalibDigiProducer::produce(edm::Event& iEvent, const edm::EventSetup& iSe
 {
   //  edm::LogInfo("SiPixelCalibDigiProducer") <<"in produce() " << std::endl;
   using namespace edm;
-  iSetup.get<TrackerDigiGeometryRecord>().get( theGeometry_ );
-  iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
+  //iSetup.get<TrackerDigiGeometryRecord>().get( theGeometry_ );
+  theGeometry_ = iSetup.getHandle(trackerGeomToken_);
+  //iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
+  theCablingMap_ = iSetup.getHandle(cablingMapToken_);
   pattern_repeat_=calib_.getNTriggers()*calib_.nVCal();
   if(use_realeventnumber_){
     iEventCounter_= iEvent.id().event()-1;
