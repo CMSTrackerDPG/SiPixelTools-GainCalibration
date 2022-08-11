@@ -641,8 +641,8 @@ SiPixelGainCalibrationDBUploader::analyze(const edm::Event& iEvent, const edm::E
 }
 
 //-------------------------------------------------------------------------------
-void SiPixelGainCalibrationDBUploader::beginRun(const edm::EventSetup& iSetup){
-}
+// void SiPixelGainCalibrationDBUploader::beginRun(const edm::EventSetup& iSetup){
+// }
 
 // ------------ method called once each job just before starting event loop  ------------
 void SiPixelGainCalibrationDBUploader::beginJob() {

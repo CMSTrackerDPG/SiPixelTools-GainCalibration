@@ -43,6 +43,7 @@
 //#include "DQMServices/Core/interface/DQMStore.h"
 //#include "DQMServices/Core/interface/MonitorElement.h"
 #include "DQM/SiPixelCommon/interface/SiPixelHistogramId.h"
+//#include "SiPixelHistogramIdGC.h"
 #include "SiPixelFolderOrganizerGC.h"
 #include "TF1.h"
 #include "TH1F.h"
@@ -74,13 +75,15 @@
 #include "CondFormats/DataRecord/interface/SiPixelVCalSimRcd.h"
 
 
+#include "FWCore/Framework/interface/maker/MakeModuleHelper.h"
+#include "FWCore/Framework/interface/maker/WorkerMaker.h"
 
 //
 // class decleration
 //
 
 
-class SiPixelOfflineCalibAnalysisBase : public edm::one::EDAnalyzer<> {
+class SiPixelOfflineCalibAnalysisBase : public edm::one::EDAnalyzer<edm::one::WatchRuns> {
 public:
   explicit SiPixelOfflineCalibAnalysisBase(const edm::ParameterSet&); 
   ~SiPixelOfflineCalibAnalysisBase();
@@ -168,8 +171,9 @@ private:
   
   // the beginJob is used to load the calib database.  It then calls the pure
   // virtual calibrationSetup() function.  Derived classes should put beginJob functionality there.
-  virtual void beginRun(const edm::Run &, const edm::EventSetup &);
-  void beginRun(const edm::EventSetup& iSetup);
+  virtual void beginRun(const edm::Run &, const edm::EventSetup &) override;
+  // void beginRun(const edm::EventSetup& iSetup);
+  virtual void endRun(const edm::Run &, const edm::EventSetup &) override {};
   void beginJob();
   void analyze(const edm::Event&, const edm::EventSetup&);
   

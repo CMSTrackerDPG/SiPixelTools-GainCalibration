@@ -1,3 +1,6 @@
+#ifndef SiPixelTools_SiPixelGainCalibrationDBUploader_h
+#define SiPixelTools_SiPixelGainCalibrationDBUploader_h
+
 // -*- C++ -*-
 //
 // Package:    SiPixelGainCalibrationDBUploader
@@ -53,7 +56,7 @@
 //
 
 //#if CMSSW_VERSION >= 123
-class SiPixelGainCalibrationDBUploader : public edm::one::EDAnalyzer<>
+class SiPixelGainCalibrationDBUploader : public edm::one::EDAnalyzer<edm::one::WatchRuns>
 //#else
 //class SiPixelGainCalibrationDBUploader : public edm::EDAnalyzer
 //#endif
@@ -65,7 +68,8 @@ class SiPixelGainCalibrationDBUploader : public edm::one::EDAnalyzer<>
 
    private:
       virtual void beginJob() ;
-      virtual void beginRun(const edm::EventSetup&) ;
+      virtual void beginRun(const edm::Run&, const edm::EventSetup&) override {};
+      virtual void endRun(const edm::Run &, const edm::EventSetup &) override {};
       virtual void analyze(const edm::Event&, const edm::EventSetup&);
       virtual void endJob() ;
   // functions added by F.B.
@@ -108,3 +112,5 @@ class SiPixelGainCalibrationDBUploader : public edm::one::EDAnalyzer<>
   int badPed_, emptyPed_,badGain_,emptyGain_; 
   edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
 };
+
+#endif
