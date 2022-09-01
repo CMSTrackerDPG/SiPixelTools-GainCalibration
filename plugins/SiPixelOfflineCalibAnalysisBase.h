@@ -196,6 +196,8 @@ private:
   // checkPixel returns whether a particular pixel is to be expected during the entire run..
   bool checkPixel(uint32_t detid, short row, short column);
   
+  edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> beginRuntrackerGeomToken_;
+  edm::ESGetToken<SiPixelFedCablingMap, SiPixelFedCablingMapRcd> beginRuncablingMapToken_;
   edm::ESGetToken<TrackerGeometry, TrackerDigiGeometryRecord> trackerGeomToken_;
   edm::ESGetToken<SiPixelFedCablingMap, SiPixelFedCablingMapRcd> cablingMapToken_;
   edm::ESGetToken<SiPixelVCal, SiPixelVCalRcd> SiPixelVCalToken_;

@@ -58,9 +58,11 @@ SiPixelOfflineCalibAnalysisBase::SiPixelOfflineCalibAnalysisBase(const edm::Para
    calibrows_Int_ = iConfig.getParameter<std::vector<int> >("calibrows_Int");
    folderMaker_ = new SiPixelFolderOrganizerGC();
    phase1_ = iConfig.getUntrackedParameter<bool>("phase1",false);
+   beginRuntrackerGeomToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord, edm::Transition::BeginRun>();
+   beginRuncablingMapToken_ = esConsumes<SiPixelFedCablingMap, SiPixelFedCablingMapRcd, edm::Transition::BeginRun>();
    trackerGeomToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>();
    cablingMapToken_ = esConsumes<SiPixelFedCablingMap, SiPixelFedCablingMapRcd>();
-   SiPixelVCalToken_ = esConsumes<SiPixelVCal, SiPixelVCalRcd>();
+   SiPixelVCalToken_ = esConsumes<SiPixelVCal, SiPixelVCalRcd, edm::Transition::BeginRun>();
    trackerTopoToken_ = esConsumes<TrackerTopology, TrackerTopologyRcd>();
 }
 
@@ -85,9 +87,9 @@ void SiPixelOfflineCalibAnalysisBase::beginRun(const edm::Run& iRun, const edm::
   // Load the calibration information from the database
   //iSetup.get<SiPixelCalibConfigurationRcd>().get(calib_);
   //iSetup.get<TrackerDigiGeometryRecord>().get( geom_ );
-  geom_ = iSetup.getHandle(trackerGeomToken_);
+  geom_ = iSetup.getHandle(beginRuntrackerGeomToken_);
   //iSetup.get<SiPixelFedCablingMapRcd>().get(theCablingMap_);
-  theCablingMap_ = iSetup.getHandle(cablingMapToken_);
+  theCablingMap_ = iSetup.getHandle(beginRuncablingMapToken_);
   edm::ESHandle<SiPixelVCal> siPixelVCal;
   //iSetup.get<SiPixelVCalRcd>().get(siPixelVCal);
   siPixelVCal = iSetup.getHandle(SiPixelVCalToken_);
