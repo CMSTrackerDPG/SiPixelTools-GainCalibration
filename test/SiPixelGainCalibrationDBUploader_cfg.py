@@ -45,13 +45,13 @@ if ':' not in dbfile:
 
 # PRINT
 #print ">>> %-10s = '%s'"%('era',era)
-print ">>> %-10s = %s"%('run',run)
-print ">>> %-10s = %s"%('year',year)
-print ">>> %-10s = %s"%('dbversion',dbversion)
-print ">>> %-10s = '%s'"%('infile',infile)
-print ">>> %-10s = '%s'"%('dbfile',dbfile)
-print ">>> %-10s = '%s'"%('rootfile',rootfile)
-print ">>> %-10s = '%s'"%('gaincalDB',gaincalDB)
+print(">>> %-10s = %s"%('run',run))
+print(">>> %-10s = %s"%('year',year))
+print(">>> %-10s = %s"%('dbversion',dbversion))
+print(">>> %-10s = '%s'"%('infile',infile))
+print(">>> %-10s = '%s'"%('dbfile',dbfile))
+print(">>> %-10s = '%s'"%('rootfile',rootfile))
+print(">>> %-10s = '%s'"%('gaincalDB',gaincalDB))
 
 ## CHECK
 #if not os.path.isfile(sqlfile):

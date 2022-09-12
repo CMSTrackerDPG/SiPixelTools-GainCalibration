@@ -22,11 +22,11 @@ def getconfig(run,verb=False):
   cfgdict.setdefault('rundir',rundir)
   cfgdict.setdefault('calib_payload','none')
   if verb>=1:
-    print '-'*80
-    print ">>> Reading config JSON file '%s'"%jsonconfig
+    print('-'*80)
+    print(">>> Reading config JSON file '%s'"%jsonconfig)
     for key in ['run', 'indir', 'outdir', 'calib_payload']:
-      print ">>> %-10s = '%s'"%(key,cfgdict[key])
-    print '-'*80
+      print(">>> %-10s = '%s'"%(key,cfgdict[key]))
+    print('-'*80)
   return cfgdict
   
 
@@ -53,9 +53,9 @@ def ensuredir(dirname,empty=False,verb=0):
   """Make directory if it does not exist."""
   if not os.path.exists(dirname):
     os.makedirs(dirname)
-    print '>>> Made directory "%s"'%(dirname)
+    print('>>> Made directory "%s"'%(dirname))
     if not os.path.exists(dirname):
-      print '>>> Failed to make directory "%s"'%(dirname)
+      print('>>> Failed to make directory "%s"'%(dirname))
   elif empty:
     for filename in os.listdir(dirname):
       filepath = os.path.join(dirname,filename)
@@ -73,7 +73,7 @@ def ensurefile(*paths,**kwargs):
     if fatal:
       raise IOError("Did not find file %s."%(path))
     else:
-      print ">>> Warning! Did not find file %s."%(path)
+      print(">>> Warning! Did not find file %s."%(path))
   return path
   
 def rmfile(filepaths):
@@ -94,16 +94,16 @@ def execute(command,dry=False,fatal=True,verb=0):
   command = str(command)
   out = ""
   if dry:
-    print ">>> Dry run: %r"%(command)
+    print(">>> Dry run: %r"%(command))
   else:
     if verb>=1:
-      print ">>> Executing: %r"%(command)
+      print(">>> Executing: %r"%(command))
     try:
       #process = Popen(command.split(),stdout=PIPE,stderr=STDOUT) #,shell=True)
       process = Popen(command,stdout=PIPE,stderr=STDOUT,bufsize=1,shell=True) #,universal_newlines=True
       for line in iter(process.stdout.readline,""):
         if verb>=1: # real time print out (does not work for python scripts without flush)
-          print line.rstrip()
+          print(line.rstrip())
         out += line
       process.stdout.close()
       retcode = process.wait()
@@ -114,12 +114,12 @@ def execute(command,dry=False,fatal=True,verb=0):
       out = out.strip()
     except Exception as e:
       if verb<1:
-        print out #">>> Output: %s"%(out)
-      print ">>> Failed: %r"%(command)
+        print(out) #">>> Output: %s"%(out)
+      print(">>> Failed: %r"%(command))
       raise e
     if retcode and fatal:
       if verb<1:
-        print out
+        print(out)
       raise CalledProcessError(retcode,command)
       #raise Exception("Command '%s' ended with return code %s"%(command,retcode)) #,err)
   return out
@@ -292,10 +292,10 @@ class StorageSystem(object):
         source += self.expandpath(file,url=fileurl)+' '
     source = source.strip()
     if verb>=2:
-      print ">>> %-10s = %r"%('sources',sources)
-      print ">>> %-10s = %r"%('source',source)
-      print ">>> %-10s = %r"%('target',target)
-      print ">>> %-10s = %r"%('htarget',htarget)
+      print(">>> %-10s = %r"%('sources',sources))
+      print(">>> %-10s = %r"%('source',source))
+      print(">>> %-10s = %r"%('target',target))
+      print(">>> %-10s = %r"%('htarget',htarget))
     out = self.execute("%s %s %s"%(self.haddcmd,htarget,source),dry=dryrun,verb=verb)
     if tmpdir:
       cpout = self.cp(htarget,target,dry=dryrun,verb=verb)
@@ -457,7 +457,7 @@ class HTCondor(BatchSystem):
     rows   = self.execute(subcmd,verb=self.verbosity-1)
     jobs   = JobList()
     if rows and self.verbosity>=1:
-      print ">>> %10s %10s %8s %8s   %s"%('user','jobid','taskid','status','args')
+      print(">>> %10s %10s %8s %8s   %s"%('user','jobid','taskid','status','args'))
     for row in rows.split('\n'):
       values = row.split()
       if len(values)<5: continue
@@ -467,7 +467,7 @@ class HTCondor(BatchSystem):
       status = self.statusdict.get(int(values[3]),'?')
       args   = ' '.join(values[4:])
       if self.verbosity>=1:
-        print ">>> %10s %10s %8s %8s   %s"%(user,jobid,taskid,status,args)
+        print(">>> %10s %10s %8s %8s   %s"%(user,jobid,taskid,status,args))
       job    = Job(self,jobid,args=args,status=status)
       jobs.append(job)
     return jobs
@@ -537,9 +537,9 @@ def error(string,**kwargs):
 
 def green(string,**kwargs): return "\033[32m%s\033[0m"%string
 
-def error(string,**kwargs): print ">>> \033[1m\033[91m%sERROR! %s\033[0m"%(kwargs.get('pre',""),string)
+def error(string,**kwargs): print(">>> \033[1m\033[91m%sERROR! %s\033[0m"%(kwargs.get('pre',""),string))
 
-def warning(string,**kwargs): print ">>> \033[1m\033[93m%sWarning!\033[0m\033[93m %s\033[0m"%(kwargs.get('pre',""),string)
+def warning(string,**kwargs): print(">>> \033[1m\033[93m%sWarning!\033[0m\033[93m %s\033[0m"%(kwargs.get('pre',""),string))
 
 def bold(string): return "\033[1m%s\033[0m"%(string)
 
