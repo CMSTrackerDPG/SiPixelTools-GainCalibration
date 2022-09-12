@@ -152,7 +152,6 @@ void SiPixelGainCalibrationDBUploader::fillDatabase(const edm::EventSetup& iSetu
   uint32_t nmodules=0;
   uint32_t detid=0;
   therootfile_->cd();
-  trackerGeomToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>();
   edm::ESHandle<TrackerGeometry> pDD;
   //iSetup.get<TrackerDigiGeometryRecord>().get( pDD );     
   pDD = iSetup.getHandle(trackerGeomToken_);
@@ -618,6 +617,8 @@ SiPixelGainCalibrationDBUploader::SiPixelGainCalibrationDBUploader(const edm::Pa
   }
   if(gainhi_>gainmax_) gainhi_=gainmax_;
   if(pedhi_>pedmax_) pedhi_=pedmax_;
+
+  trackerGeomToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>();
 
   std::cout<<" max gain "<<gainmax_<<" hi/low gain "<<gainhi_<<"/"<<gainlow_
            <<" max ped "<<pedmax_<<" hi/low ped "<<pedhi_<<"/"<<pedlow_
