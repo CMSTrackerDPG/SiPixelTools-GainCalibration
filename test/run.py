@@ -70,6 +70,7 @@ parser_rsb = subparsers.add_parser('resubmit', parents=[parser_cmn],   help=help
 parser_sts = subparsers.add_parser('status',   parents=[parser_cmn],   help=help_sts, description=help_sts)
 parser_hdd = subparsers.add_parser('hadd',     parents=[parser_cmnO],  help=help_hdd, description=help_hdd)
 parser_sum = subparsers.add_parser('summary',  parents=[parser_cmnO],  help=help_sum, description=help_sum)
+parser_sum = subparsers.add_parser('twiki',  parents=[parser_cmnO],  help=help_sum, description=help_sum)
 parser_cmp = subparsers.add_parser('compare',  parents=[parser_cmnO],  help=help_cmp, description=help_cmp)
 parser_pay = subparsers.add_parser('payload',  parents=[parser_cmnO],  help=help_pay, description=help_pay)
 #parser_twk = subparsers.add_parser('twiki',    parents=[parser_cmnO],  help=help_twk, description=help_twk)
@@ -132,6 +133,8 @@ def main(args):
     main_hadd(args)
   elif args.subcommand=='summary':
     main_summary(args)
+  elif args.subcommand=='twiki':
+    main_twiki(args)
   elif args.subcommand=='payload':
     main_payload(args)
   elif args.subcommand=='compare':
@@ -491,7 +494,7 @@ def main_summary(args):
   if not args.pdfonly:
     sumstorage.cd()
     # TODO: convert CC script to python
-    #execute('root -l -b -x make_ComparisonPlots.cc+"(\\"%s\\",\\"%s\\")" -q'%(gainfile,run),verb=verbosity+1)
+    execute('root -l -b -x make_ComparisonPlots.cc+"(\\"%s\\",\\"%s\\")" -q'%(gainfile,run),verb=verbosity+1)
   
   # CREATE TEX TEMPLATE
   ##os.chdir(_basedir)
@@ -528,6 +531,105 @@ def main_summary(args):
   #    print logfile.read()
   
 
+#########
+# TWIKI #
+#########
+
+def main_twiki(args):
+  import shutil
+  import tarfile
+  if args.verbosity>=1:
+    print ">>> main_summary", args
+  
+  # SETTING
+  verbosity  = args.verbosity
+  run        = args.run
+  if args.outdir:
+    outdir   = args.outdir
+  else:
+    cfgdict  = getconfig(run)
+    outdir   = cfgdict['outdir']
+    rundir   = cfgdict['rundir']
+  outstorage = getstorage(outdir)
+  gainfile   = outstorage.file("GainCalibration.root",ensure=True)
+  sumdir     = os.path.join(rundir,"Summary_Run%s"%(run)) # TEXToutput
+  sumstorage = Local(sumdir,ensure=True)
+  texfname   = os.path.join(sumdir,"gain_summary.tex")
+  pdffname   = "gain_summary.pdf"
+  sumfname   = os.path.join(sumdir,"texSummary_Run%s.tex"%(run))
+  print '-'*80
+  print ">>> Create summary of gain calibration..."
+  print ">>> %-9s = %s"%('run',run)
+  print ">>> %-9s = %r"%('outdir',outdir)
+  print ">>> %-9s = %r"%('rundir',rundir)
+  print ">>> %-9s = %r"%('sumdir',sumdir)
+  print ">>> %-9s = %r"%('gainfile',gainfile)
+  print ">>> %-9s = %r"%('sumfname',sumfname)
+  print ">>> %-9s = %r"%('texfname',texfname)
+  print '-'*80
+  
+  # make twiki dir
+  twiki_dir_path = os.path.join(rundir, "Twiki_Run%s"%(run))
+  figs_dir_path = os.path.join(twiki_dir_path, "figs")
+  tar_ball_path = os.path.join(rundir, "run%s.tar.gz"%(run))
+
+  if os.path.exists(twiki_dir_path):
+    dir_content = os.listdir(twiki_dir_path)
+    print ">>> Twiki directory exists already and contains the following files and subdirectories:"
+    print dir_content
+    answer_dir = raw_input("Do you want to overwrite it? [y/n] ").lower()[0]
+    if answer_dir == "y":
+      shutil.rmtree(twiki_dir_path)
+    
+  if os.path.exists(tar_ball_path):
+    print ">>> The output tar ball exists already."
+    answer_dir = raw_input("Do you want to overwrite it? [y/n] ").lower()[0]
+    if answer_dir == "y":
+      os.remove(tar_ball_path)
+    
+  if not os.path.exists(twiki_dir_path):
+    print ">>> Create Twiki directory"
+    os.makedirs(twiki_dir_path)
+    os.makedirs(figs_dir_path)
+    if not os.path.exists(twiki_dir_path):
+      print ">>> Twiki directory: %s could not be created!"%(twiki_dir_path)
+    else:
+      print ">>> Twiki directory: %s created."%(twiki_dir_path)
+      # copy to twiki dir
+      print ">>> copy files to twiki director: start"
+      for root, dirs, files in os.walk(sumdir):
+        for file_name in files:
+          file_path = os.path.join(root, file_name)
+          if file_name[-4:] == ".png":
+            print ">>> copy %s to %s"%(file_path, figs_dir_path)
+            shutil.copy2(file_path, figs_dir_path)
+          elif file_name[-4:] == ".log":
+            print ">>> copy %s to %s"%(file_path, twiki_dir_path)
+            shutil.copy2(file_path, twiki_dir_path)
+          elif file_name == "Comp_Run%s.root"%(run):
+            print ">>> copy %s to %s"%(file_path, os.path.join(twiki_dir_path, "Summary_Run%s.root"%(run)))
+            shutil.copy2(file_path, os.path.join(twiki_dir_path, "Summary_Run%s.root"%(run)))
+          elif file_name == "gain_summary.pdf":
+            print ">>> copy %s to %s"%(file_path, os.path.join(twiki_dir_path, "gain_summary_Run%s.pdf"%(run)))
+            shutil.copy2(file_path, os.path.join(twiki_dir_path, "gain_summary_Run%s.pdf"%(run)))
+      print ">>> copy files to twiki directory: done"
+
+  # tar gz dir to file
+  if not os.path.exists(tar_ball_path):
+    print ">>> create tar ball with gzip compression"
+    with tarfile.open(tar_ball_path, "w:gz") as tar:
+      for root, dirs, files in os.walk(twiki_dir_path):
+        for file_name in files:
+          if file_name[-4:] != ".png":
+            file_path = os.path.join(root, file_name)
+            tar.add(file_path, arcname=os.path.basename(file_path))
+        for dir_name in dirs:
+          dir_path = os.path.join(root, dir_name)
+          tar.add(dir_path, arcname=os.path.basename(dir_path))
+    if not os.path.exists(tar_ball_path):
+      print ">>> %s could not be created!"%tar_ball_path
+    else:
+      print ">>> %s created and filled"%tar_ball_path
 
 ###############
 #   PAYLOAD   #
@@ -574,8 +676,8 @@ def main_payload(args):
   #execute(cmd.replace('$GAIN','full'))
   
   ## HLT PAYLOAD
-  #print "Creating payload for HLT..."
-  #execute(cmd.replace('$GAIN','hlt'))
+  # print "Creating payload for HLT..."
+  # execute(cmd.replace('$GAIN','hlt'))
   
 
 
