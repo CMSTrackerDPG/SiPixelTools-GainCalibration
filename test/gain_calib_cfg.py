@@ -164,13 +164,13 @@ process.VCalReader = cms.ESSource("PoolDBESSource",
         messageLevel = cms.untracked.int32(verbosity),
         authenticationPath = cms.untracked.string('')
     ),
-    #connect = cms.string("sqlite_file:"+sqlfile),
-    connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),  # DB
+    connect = cms.string("sqlite_file:"+sqlfile),
+    # connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),  # DB
     toGet = cms.VPSet(
         cms.PSet(
             record = cms.string("SiPixelVCalRcd"),
             #tag = cms.string("SiPixelVCal_v1")
-            tag = cms.string("SiPixelVCal_phase1_2021_v1")
+            tag = cms.string("SiPixelVCal_phase1_2023_v4")
         ),
     ),
 )

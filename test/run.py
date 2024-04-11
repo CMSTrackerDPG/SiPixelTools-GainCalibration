@@ -70,7 +70,7 @@ parser_rsb = subparsers.add_parser('resubmit', parents=[parser_cmn],   help=help
 parser_sts = subparsers.add_parser('status',   parents=[parser_cmn],   help=help_sts, description=help_sts)
 parser_hdd = subparsers.add_parser('hadd',     parents=[parser_cmnO],  help=help_hdd, description=help_hdd)
 parser_sum = subparsers.add_parser('summary',  parents=[parser_cmnO],  help=help_sum, description=help_sum)
-parser_sum = subparsers.add_parser('twiki',  parents=[parser_cmnO],  help=help_sum, description=help_sum)
+parser_twi = subparsers.add_parser('twiki',    parents=[parser_cmnO],  help=help_sum, description=help_sum)
 parser_cmp = subparsers.add_parser('compare',  parents=[parser_cmnO],  help=help_cmp, description=help_cmp)
 parser_pay = subparsers.add_parser('payload',  parents=[parser_cmnO],  help=help_pay, description=help_pay)
 #parser_twk = subparsers.add_parser('twiki',    parents=[parser_cmnO],  help=help_twk, description=help_twk)
@@ -676,8 +676,8 @@ def main_payload(args):
   #execute(cmd.replace('$GAIN','full'))
   
   ## HLT PAYLOAD
-  # print "Creating payload for HLT..."
-  # execute(cmd.replace('$GAIN','hlt'))
+  print "Creating payload for HLT..."
+  execute(cmd.replace('$GAIN','hlt'))
   
 
 
