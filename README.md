@@ -10,13 +10,14 @@ Instructions for DOCs can be found on this TWiki: https://twiki.cern.ch/twiki/bi
 ## Installation
 Prepare your working directory with CMSSW
 ```
+# use an lxplus8 node or an equivalent apptainer/singularity environment on any other machine
 mkdir -p ~/public/CMSSW/GainCalibrations/
 cd ~/public/CMSSW/GainCalibrations/
 
 source $VO_CMS_SW_DIR/cmsset_default.sh
 export SCRAM_ARCH=slc7_amd64_gcc820
-cmsrel CMSSW_11_3_0
-cd CMSSW_11_3_0/src
+cmsrel CMSSW_12_5_0
+cd CMSSW_12_5_0/src
 cmsenv
 git clone https://github.com/CMSTrackerDPG/SiPixelTools-GainCalibration.git SiPixelTools/GainCalibration
 git clone https://github.com/CMSTrackerDPG/SiPixelTools-PixelDumpDataInputSource.git SiPixelTools/PixelDumpDataInputSource
@@ -102,8 +103,8 @@ Basically:
 export SCRAM_ARCH=slc7_amd64_gcc820
 mkdir pixels
 cd pixels
-cmsrel CMSSW_11_3_0
-cd CMSSW_11_3_0/src
+cmsrel CMSSW_12_5_0
+cd CMSSW_12_5_0/src
 cmsenv
 git cms-addpkg CondTools/SiPixel
 scram b -j8
