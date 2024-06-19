@@ -10,14 +10,10 @@ Instructions for DOCs can be found on this TWiki: https://twiki.cern.ch/twiki/bi
 ## Installation
 Prepare your working directory with CMSSW
 ```
-# use an lxplus8 node or an equivalent apptainer/singularity environment on any other machine
-mkdir -p ~/public/CMSSW/GainCalibrations/
-cd ~/public/CMSSW/GainCalibrations/
-
-source $VO_CMS_SW_DIR/cmsset_default.sh
-export SCRAM_ARCH=slc7_amd64_gcc820
-cmsrel CMSSW_12_5_0
-cd CMSSW_12_5_0/src
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+export SCRAM_ARCH=el9_amd64_gcc11
+cmsrel CMSSW_13_0_2
+cd CMSSW_13_0_2/src
 cmsenv
 git clone https://github.com/CMSTrackerDPG/SiPixelTools-GainCalibration.git SiPixelTools/GainCalibration
 git clone https://github.com/CMSTrackerDPG/SiPixelTools-PixelDumpDataInputSource.git SiPixelTools/PixelDumpDataInputSource
@@ -29,8 +25,8 @@ cd SiPixelTools/GainCalibration/test
 If you want to run the gain calibration on a single FED, please use [`test/gain_calib_cfg.py`](test/gain_calib_cfg.py)
 For example, to run a test job, try
 ```
-cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_323203/GainCalibration_1205_323203.dmp ./
-cmsRun gain_calib_cfg.py run=323203 fed=1205
+cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10570/GainCalibration_1205_10570.dmp ./
+cmsRun gain_calib_cfg.py run=10570 fed=1205
 ```
 The output will be `GainCalibration.root`. Check `text_output.log` for errors.
 
@@ -43,51 +39,51 @@ First, prepare the job directory with
 ```
 For example,
 ```
-./run.py create 2381 -i /store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_2381 -o /store/group/dpg_tracker_pixel/comm_pixel/$USER/
+./run.py create 10570 -i /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10570 -o /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/$USER/
 ```
-To run from and store to default `Phase1/Run_*` directory, which is what you will do for any "real" gain calibration, simply do
+To run from the default `Phase1/Run_*` directory, which is what you will do for any "real" gain calibration, simply do
 ```
-./run.py create 2381
+./run.py create 10570
 ```
 This creates a folder with a config file storing information about input/output folders
 and creates the job scripts for the submission (from the template).
 If you want to run over BPIX only, use the `--BPix-only` option
 ```
-./run.py create 2381 --BPix-only
+./run.py create 10570 --BPix-only
 ```
 
 ## Status & resubmission
 Submit your jobs
 ```
-./run.py submit 2381
+./run.py submit 10570
 ```
 You can check the status of your jobs with `condor_q`, or with
 ```
-./run.py status 2381
+./run.py status 10570
 ```
 If jobs fail, please use
 ```
-./run.py resubmit 2381
+./run.py resubmit 10570
 ```
 To resubmit one or more specific FED jobs, please use `--fed`.
 
 ## Finalizing
 Now, hadd the output
 ```
-./run.py hadd 2381
+./run.py hadd 10570
 ```
 This creates a large `GainCalibration.root` file.
 Create a summary pdf with
 ```
-./run.py summary 2381
+./run.py summary 10570
 ```
 Then create a tar file with the output and print some output to be posted at the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelGainCalibrationDoc):
 ```
-./run.py twiki 2381
+./run.py twiki 10570
 ```
 The last step is to produce the payload (a database object)
 ```
-./run.py payload 2381 YEAR VERSION
+./run.py payload 10570 YEAR VERSION
 ```
 where YEAR is the year the calibration was taken and VERSION is the number of payloads produced in that year.
 After this is done, please notify the following people of the location of the database object,
@@ -97,14 +93,12 @@ Tamás Vámi <vami.tamasATwigner.mta.hu>,
 Tanja Susa <Tatjana.SusaATcern.ch>.
 
 ## VCal database object
-To update the VCal database object, please see the [TWiki](https://twiki.cern.ch/twiki/bin/view/CMS/SiPixelGainCalibrationDoc#VCal_database_object).
+To update the VCal database object, please see the [TWiki](https://twiki.cern.ch/twiki/bin/view/CMS/SiPixelVCalHistory).
 Basically:
 ```
-export SCRAM_ARCH=slc7_amd64_gcc820
-mkdir pixels
-cd pixels
-cmsrel CMSSW_12_5_0
-cd CMSSW_12_5_0/src
+export SCRAM_ARCH=el9_amd64_gcc11
+cmsrel CMSSW_13_0_2
+cd CMSSW_13_0_2/src
 cmsenv
 git cms-addpkg CondTools/SiPixel
 scram b -j8
