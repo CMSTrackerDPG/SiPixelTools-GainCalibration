@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # Author: Izaak Neutelings (February 2020)
 import os, sys, re, glob, json, getpass
 from utils import *
@@ -107,7 +107,7 @@ args = parser.parse_args(args)
 
 def main(args):
   if args.verbosity>=1:
-    print ">>> main", args
+    print(">>> main", args)
   
   # SETTING
   global _PixFEDs, _run, batch
@@ -140,7 +140,7 @@ def main(args):
   elif args.subcommand=='compare':
     main_compare(args)
   else:
-    print ">>> subcommand '%s' not implemented!"%(args.subcommand)
+    print(">>> subcommand '%s' not implemented!"%(args.subcommand))
   
 
 
@@ -150,7 +150,7 @@ def main(args):
 
 def main_create(args):
   if args.verbosity>=1:
-    print ">>> main_create", args
+    print(">>> main_create", args)
   
   # SETTING
   run              = args.run
@@ -169,18 +169,18 @@ def main_create(args):
   submit_script    = os.path.join(rundir,"submit_gain_calib_%s.sh"%run)
   subtask_script   = os.path.join(rundir,"submit_gain_calib_%s.sub"%run)
   config_script    = os.path.join(rundir,config_template)
-  print '-'*80
-  print ">>> Setting parameters for creating config files..."
-  print ">>> %-14s = %s"%('run',run)
-  print ">>> %-14s = %r"%('cwd',cwd)
-  print ">>> %-14s = %r"%('indir',indir)
-  print ">>> %-14s = %r"%('outdir',outdir)
-  print ">>> %-14s = %r"%('rundir',rundir)
-  print ">>> %-14s = %r"%('config',jsonconfig)
-  print ">>> %-14s = %r"%('subtask_script',subtask_script)
-  print ">>> %-14s = %r"%('submit_script',submit_script)
-  print ">>> %-14s = %r"%('config_script',config_script)
-  print '-'*80
+  print('-'*80)
+  print(">>> Setting parameters for creating config files...")
+  print(">>> %-14s = %s"%('run',run))
+  print(">>> %-14s = %r"%('cwd',cwd))
+  print(">>> %-14s = %r"%('indir',indir))
+  print(">>> %-14s = %r"%('outdir',outdir))
+  print(">>> %-14s = %r"%('rundir',rundir))
+  print(">>> %-14s = %r"%('config',jsonconfig))
+  print(">>> %-14s = %r"%('subtask_script',subtask_script))
+  print(">>> %-14s = %r"%('submit_script',submit_script))
+  print(">>> %-14s = %r"%('config_script',config_script))
+  print('-'*80)
   
   # PREPARE
   ensuredir(rundir,empty=True)
@@ -194,7 +194,7 @@ def main_create(args):
   #if [ `is_on_castor $indir` -eq 1 ] ; then wait_for_staging ; fi
   
   # JSON CONFIG
-  print ">>> Creating config file..."
+  print(">>> Creating config file...")
   data = { 'run': run, 'indir': indir, 'outdir': outdir, 'feds': _PixFEDs}
   with open(jsonconfig,'w') as file:
     #file.write("run = %s"%run)
@@ -213,7 +213,7 @@ def main_create(args):
   ###  writetemplate(template,fedconfig,sublist)
   
   # PREPARES SCRIPTS
-  print ">>> Creating submission files..."
+  print(">>> Creating submission files...")
   subtask_sublist = [
     ('RUN',run),('FEDS',fedlist),
   ]
@@ -225,7 +225,7 @@ def main_create(args):
   writetemplate(submit_template,submit_script,submit_sublist)
   writetemplate(config_template,config_script,[ ])
   
-  print ">>> Created run directory '%s'"%rundir
+  print(">>> Created run directory '%s'"%rundir)
   
 
 
@@ -235,7 +235,7 @@ def main_create(args):
 
 def main_submit(args):
   if args.verbosity>=1:
-    print ">>> main_submit", args
+    print(">>> main_submit", args)
   
   # SETTING
   verbosity      = args.verbosity
@@ -250,16 +250,16 @@ def main_submit(args):
   outstorage     = getstorage(outdir)
   instorage      = getstorage(indir)
   subtask_script = "submit_gain_calib_%s.sub"%run
-  print '-'*80
-  print ">>> Setting parameters for submission..."
-  print ">>> %-14s = %s"%('run',run)
-  print ">>> %-14s = %r"%('cwd',cwd)
-  print ">>> %-14s = %r"%('indir',indir)
-  print ">>> %-14s = %r"%('outdir',outdir)
-  print ">>> %-14s = %r"%('rundir',rundir)
-  print ">>> %-14s = %r"%('logdir',logdir)
-  print ">>> %-14s = %r"%('subtask_script',subtask_script)
-  print '-'*80
+  print('-'*80)
+  print(">>> Setting parameters for submission...")
+  print(">>> %-14s = %s"%('run',run))
+  print(">>> %-14s = %r"%('cwd',cwd))
+  print(">>> %-14s = %r"%('indir',indir))
+  print(">>> %-14s = %r"%('outdir',outdir))
+  print(">>> %-14s = %r"%('rundir',rundir))
+  print(">>> %-14s = %r"%('logdir',logdir))
+  print(">>> %-14s = %r"%('subtask_script',subtask_script))
+  print('-'*80)
   
   # PREPARE
   ensuredir(logdir,empty=False)
@@ -279,7 +279,7 @@ def main_submit(args):
 
 def main_resubmit(args):
   if args.verbosity>=1:
-    print ">>> main_resubmit", args
+    print(">>> main_resubmit", args)
   
   # SETTING
   verbosity        = args.verbosity
@@ -306,20 +306,20 @@ def main_resubmit(args):
     feds           = [f for f in feds if f in _BPixFEDs]
   elif args.FPixOnly:
     feds           = [f for f in feds if f in _FPixFEDs]
-  print '-'*80
-  print ">>> Setting parameters for submission..."
-  print ">>> %-14s = %s"%('run',run)
-  print ">>> %-14s = %s"%('feds',feds or 'all')
-  print ">>> %-14s = %r"%('cwd',cwd)
-  print ">>> %-14s = %r"%('indir',indir)
-  print ">>> %-14s = %r"%('outdir',outdir)
-  print ">>> %-14s = %r"%('rundir',rundir)
-  print ">>> %-14s = %r"%('logdir',logdir)
-  print ">>> %-14s = %r"%('subtask_script',subtask_script)
-  print '-'*80
+  print('-'*80)
+  print(">>> Setting parameters for submission...")
+  print(">>> %-14s = %s"%('run',run))
+  print(">>> %-14s = %s"%('feds',feds or 'all'))
+  print(">>> %-14s = %r"%('cwd',cwd))
+  print(">>> %-14s = %r"%('indir',indir))
+  print(">>> %-14s = %r"%('outdir',outdir))
+  print(">>> %-14s = %r"%('rundir',rundir))
+  print(">>> %-14s = %r"%('logdir',logdir))
+  print(">>> %-14s = %r"%('subtask_script',subtask_script))
+  print('-'*80)
   
   # PREPARES SCRIPTS
-  print ">>> Creating submission files..."
+  print(">>> Creating submission files...")
   if feds:
     queue = "queue arg in ( %s )"%(', '.join(str(s) for s in feds))
     writetemplate(subtask_template,subtask_script,rmlist=["queue arg"],applist=[queue])
@@ -342,7 +342,7 @@ def main_resubmit(args):
 
 def main_status(args):
   if args.verbosity>=1:
-    print ">>> main_status", args
+    print(">>> main_status", args)
   
   # SETTING
   verbosity = args.verbosity
@@ -357,12 +357,12 @@ def main_status(args):
     feds    = [f for f in feds if f in _BPixFEDs]
   elif args.FPixOnly:
     feds    = [f for f in feds if f in _FPixFEDs]
-  print '-'*80
-  print ">>> Checking status of job output..."
-  print ">>> %-8s = %s"%('run',run)
-  print ">>> %-8s = %s"%('feds',feds)
-  print ">>> %-8s = %r"%('outdir',outdir)
-  print '-'*80
+  print('-'*80)
+  print(">>> Checking status of job output...")
+  print(">>> %-8s = %s"%('run',run))
+  print(">>> %-8s = %s"%('feds',feds))
+  print(">>> %-8s = %r"%('outdir',outdir))
+  print('-'*80)
   
   checkfedoutput(outdir,feds,verb=verbosity)
   
@@ -372,7 +372,7 @@ def checkfedoutput(storage,feds,dry=False,verb=0):
   """Check FED output files in given directory. Returns list of found FEDs"""
   
   # CHECK OUTPUT
-  if isinstance(storage,basestring):
+  if isinstance(storage,str):
     storage = getstorage(storage)
   fedspend  = [ ] # pending, running
   fedsfail  = [ ]
@@ -403,10 +403,10 @@ def checkfedoutput(storage,feds,dry=False,verb=0):
     if fedden:
       ratio = color("%2d/%d"%(len(fedden),len(feds)),col,False)
       label = color(label,col,True)
-      print ">>> %s %s - %s:"%(ratio,label,text)
-      print ">>>    " + ', '.join(str(f) for f in fedden)
+      print(">>> %s %s - %s:"%(ratio,label,text))
+      print(">>>    " + ', '.join(str(f) for f in fedden))
     else:
-      print ">>> %2d/%d %s - %s"%(len(fedden),len(feds),label,text)
+      print(">>> %2d/%d %s - %s"%(len(fedden),len(feds),label,text))
   printjobs(fedsdone,'DONE',   "FEDs with output in outdir",'green')
   printjobs(fedspend,'PENDING',"FEDs with pending or running jobs",'white')
   printjobs(fedsfail,'FAILED', "FEDs with no output in outdir",'red')
@@ -421,7 +421,7 @@ def checkfedoutput(storage,feds,dry=False,verb=0):
 
 def main_hadd(args):
   if args.verbosity>=1:
-    print ">>> main_hadd", args
+    print(">>> main_hadd", args)
   
   # SETTING
   verbosity  = args.verbosity
@@ -434,11 +434,11 @@ def main_hadd(args):
     outdir   =  cfgdict['outdir']
   verbosity  = args.verbosity
   outstorage = getstorage(outdir)
-  print '-'*80
-  print ">>> Hadd'ing job output..."
-  print ">>> %-8s = %s"%('run',run)
-  print ">>> %-8s = %r"%('outdir',outdir)
-  print '-'*80
+  print('-'*80)
+  print(">>> Hadd'ing job output...")
+  print(">>> %-8s = %s"%('run',run))
+  print(">>> %-8s = %r"%('outdir',outdir))
+  print('-'*80)
   
   ##rm -f $dir/GainCalibration.root
   outstorage.hadd("$PATH/[0-9]*[0-9].root","$PATH/GainCalibration.root",dry=dryrun,verb=verbosity+1)
@@ -451,7 +451,7 @@ def main_hadd(args):
 
 def main_summary(args):
   if args.verbosity>=1:
-    print ">>> main_summary", args
+    print(">>> main_summary", args)
   
   # SETTING
   verbosity  = args.verbosity
@@ -469,16 +469,16 @@ def main_summary(args):
   texfname   = os.path.join(sumdir,"gain_summary.tex")
   pdffname   = "gain_summary.pdf"
   sumfname   = os.path.join(sumdir,"texSummary_Run%s.tex"%(run))
-  print '-'*80
-  print ">>> Create summary of gain calibration..."
-  print ">>> %-9s = %s"%('run',run)
-  print ">>> %-9s = %r"%('outdir',outdir)
-  print ">>> %-9s = %r"%('rundir',rundir)
-  print ">>> %-9s = %r"%('sumdir',sumdir)
-  print ">>> %-9s = %r"%('gainfile',gainfile)
-  print ">>> %-9s = %r"%('sumfname',sumfname)
-  print ">>> %-9s = %r"%('texfname',texfname)
-  print '-'*80
+  print('-'*80)
+  print(">>> Create summary of gain calibration...")
+  print(">>> %-9s = %s"%('run',run))
+  print(">>> %-9s = %r"%('outdir',outdir))
+  print(">>> %-9s = %r"%('rundir',rundir))
+  print(">>> %-9s = %r"%('sumdir',sumdir))
+  print(">>> %-9s = %r"%('gainfile',gainfile))
+  print(">>> %-9s = %r"%('sumfname',sumfname))
+  print(">>> %-9s = %r"%('texfname',texfname))
+  print('-'*80)
   
   # COPY SCRIPTS
   scripts = [
@@ -498,7 +498,7 @@ def main_summary(args):
   
   # CREATE TEX TEMPLATE
   ##os.chdir(_basedir)
-  print os.getcwd()
+  print(os.getcwd())
   ##tempfname = ensurefile("scripts/gain_summary_template.tex")
   tempfname = ensurefile("gain_summary_template.tex")
   sublist   = [('RUNNUMBER',run),('DIFF_TO_REPLACE',0)]
@@ -519,14 +519,14 @@ def main_summary(args):
           texfile.write(line)
   
   # COMPILE TEX
-  print ">>> Compiling %s..."%(texfname)
+  print(">>> Compiling %s..."%(texfname))
   sumstorage.cd()
   execute("pdflatex %s"%(texfname),verb=verbosity+1) #&> latex.log
   execute("pdflatex %s"%(texfname),verb=verbosity+1) #>> latex.log 2>&1
   if os.path.isfile(pdffname):
-    print ">>> Done compiling %s!"%(texfname)
+    print(">>> Done compiling %s!"%(texfname))
   else:
-    print ">>> Compiling of %s failed!"%(texfname)
+    print(">>> Compiling of %s failed!"%(texfname))
   #  with open("latex.log",'r') as logfile:
   #    print logfile.read()
   
@@ -539,7 +539,7 @@ def main_twiki(args):
   import shutil
   import tarfile
   if args.verbosity>=1:
-    print ">>> main_summary", args
+    print(">>> main_summary", args)
   
   # SETTING
   verbosity  = args.verbosity
@@ -557,16 +557,16 @@ def main_twiki(args):
   texfname   = os.path.join(sumdir,"gain_summary.tex")
   pdffname   = "gain_summary.pdf"
   sumfname   = os.path.join(sumdir,"texSummary_Run%s.tex"%(run))
-  print '-'*80
-  print ">>> Create summary of gain calibration..."
-  print ">>> %-9s = %s"%('run',run)
-  print ">>> %-9s = %r"%('outdir',outdir)
-  print ">>> %-9s = %r"%('rundir',rundir)
-  print ">>> %-9s = %r"%('sumdir',sumdir)
-  print ">>> %-9s = %r"%('gainfile',gainfile)
-  print ">>> %-9s = %r"%('sumfname',sumfname)
-  print ">>> %-9s = %r"%('texfname',texfname)
-  print '-'*80
+  print('-'*80)
+  print(">>> Create summary of gain calibration...")
+  print(">>> %-9s = %s"%('run',run))
+  print(">>> %-9s = %r"%('outdir',outdir))
+  print(">>> %-9s = %r"%('rundir',rundir))
+  print(">>> %-9s = %r"%('sumdir',sumdir))
+  print(">>> %-9s = %r"%('gainfile',gainfile))
+  print(">>> %-9s = %r"%('sumfname',sumfname))
+  print(">>> %-9s = %r"%('texfname',texfname))
+  print('-'*80)
   
   # make twiki dir
   twiki_dir_path = os.path.join(rundir, "Twiki_Run%s"%(run))
@@ -575,48 +575,48 @@ def main_twiki(args):
 
   if os.path.exists(twiki_dir_path):
     dir_content = os.listdir(twiki_dir_path)
-    print ">>> Twiki directory exists already and contains the following files and subdirectories:"
-    print dir_content
-    answer_dir = raw_input("Do you want to overwrite it? [y/n] ").lower()[0]
+    print(">>> Twiki directory exists already and contains the following files and subdirectories:")
+    print(dir_content)
+    answer_dir = input("Do you want to overwrite it? [y/n] ").lower()[0]
     if answer_dir == "y":
       shutil.rmtree(twiki_dir_path)
     
   if os.path.exists(tar_ball_path):
-    print ">>> The output tar ball exists already."
-    answer_dir = raw_input("Do you want to overwrite it? [y/n] ").lower()[0]
+    print(">>> The output tar ball exists already.")
+    answer_dir = input("Do you want to overwrite it? [y/n] ").lower()[0]
     if answer_dir == "y":
       os.remove(tar_ball_path)
     
   if not os.path.exists(twiki_dir_path):
-    print ">>> Create Twiki directory"
+    print(">>> Create Twiki directory")
     os.makedirs(twiki_dir_path)
     os.makedirs(figs_dir_path)
     if not os.path.exists(twiki_dir_path):
-      print ">>> Twiki directory: %s could not be created!"%(twiki_dir_path)
+      print(">>> Twiki directory: %s could not be created!"%(twiki_dir_path))
     else:
-      print ">>> Twiki directory: %s created."%(twiki_dir_path)
+      print(">>> Twiki directory: %s created."%(twiki_dir_path))
       # copy to twiki dir
-      print ">>> copy files to twiki director: start"
+      print(">>> copy files to twiki director: start")
       for root, dirs, files in os.walk(sumdir):
         for file_name in files:
           file_path = os.path.join(root, file_name)
           if file_name[-4:] == ".png":
-            print ">>> copy %s to %s"%(file_path, figs_dir_path)
+            print(">>> copy %s to %s"%(file_path, figs_dir_path))
             shutil.copy2(file_path, figs_dir_path)
           elif file_name[-4:] == ".log":
-            print ">>> copy %s to %s"%(file_path, twiki_dir_path)
+            print(">>> copy %s to %s"%(file_path, twiki_dir_path))
             shutil.copy2(file_path, twiki_dir_path)
           elif file_name == "Comp_Run%s.root"%(run):
-            print ">>> copy %s to %s"%(file_path, os.path.join(twiki_dir_path, "Summary_Run%s.root"%(run)))
+            print(">>> copy %s to %s"%(file_path, os.path.join(twiki_dir_path, "Summary_Run%s.root"%(run))))
             shutil.copy2(file_path, os.path.join(twiki_dir_path, "Summary_Run%s.root"%(run)))
           elif file_name == "gain_summary.pdf":
-            print ">>> copy %s to %s"%(file_path, os.path.join(twiki_dir_path, "gain_summary_Run%s.pdf"%(run)))
+            print(">>> copy %s to %s"%(file_path, os.path.join(twiki_dir_path, "gain_summary_Run%s.pdf"%(run))))
             shutil.copy2(file_path, os.path.join(twiki_dir_path, "gain_summary_Run%s.pdf"%(run)))
-      print ">>> copy files to twiki directory: done"
+      print(">>> copy files to twiki directory: done")
 
   # tar gz dir to file
   if not os.path.exists(tar_ball_path):
-    print ">>> create tar ball with gzip compression"
+    print(">>> create tar ball with gzip compression")
     with tarfile.open(tar_ball_path, "w:gz") as tar:
       for root, dirs, files in os.walk(twiki_dir_path):
         for file_name in files:
@@ -627,9 +627,9 @@ def main_twiki(args):
           dir_path = os.path.join(root, dir_name)
           tar.add(dir_path, arcname=os.path.basename(dir_path))
     if not os.path.exists(tar_ball_path):
-      print ">>> %s could not be created!"%tar_ball_path
+      print(">>> %s could not be created!"%tar_ball_path)
     else:
-      print ">>> %s created and filled"%tar_ball_path
+      print(">>> %s created and filled"%tar_ball_path)
 
 ###############
 #   PAYLOAD   #
@@ -637,7 +637,7 @@ def main_twiki(args):
 
 def main_payload(args):
   if args.verbosity>=1:
-    print ">>> main_payload", args
+    print(">>> main_payload", args)
   
   # SETTING
   verbosity  = args.verbosity
@@ -654,21 +654,21 @@ def main_payload(args):
   gainfile   = outstorage.file("GainCalibration.root",ensure=True)
   paydir     = os.path.join(rundir,"Payload_Run%s"%(run))
   paystorage = Local(paydir,ensure=True)
-  print '-'*80
-  print ">>> Create gain calibration payload..."
-  print ">>> %-9s = %s"%('run',run)
-  print ">>> %-9s = %s"%('year',year)
-  print ">>> %-9s = %s"%('dbversion',dbversion)
-  print ">>> %-9s = %r"%('outdir',outdir)
-  print ">>> %-9s = %r"%('rundir',rundir)
-  print ">>> %-9s = %r"%('paydir',paydir)
-  print ">>> %-9s = %r"%('gainfile',gainfile)
-  print '-'*80
+  print('-'*80)
+  print(">>> Create gain calibration payload...")
+  print(">>> %-9s = %s"%('run',run))
+  print(">>> %-9s = %s"%('year',year))
+  print(">>> %-9s = %s"%('dbversion',dbversion))
+  print(">>> %-9s = %r"%('outdir',outdir))
+  print(">>> %-9s = %r"%('rundir',rundir))
+  print(">>> %-9s = %r"%('paydir',paydir))
+  print(">>> %-9s = %r"%('gainfile',gainfile))
+  print('-'*80)
   
   # OFFLINE PAYLOAD
   cmd = ("cmsRun SiPixelGainCalibrationDBUploader_cfg.py"
          " run=%s year=%s dbversion=%s gain=$GAIN file=%s outdir=%s"%(run,year,dbversion,gainfile,paydir))
-  print "Creating payload for offline..."
+  print("Creating payload for offline...")
   execute(cmd.replace('$GAIN','offline'),verb=verbosity+1)
   
   ## OFFLINE FULL PAYLOAD
@@ -676,7 +676,7 @@ def main_payload(args):
   #execute(cmd.replace('$GAIN','full'))
   
   ## HLT PAYLOAD
-  print "Creating payload for HLT..."
+  print("Creating payload for HLT...")
   execute(cmd.replace('$GAIN','hlt'))
   
 
@@ -687,25 +687,25 @@ def main_payload(args):
 
 def main_compare(args):
   if args.verbosity>=1:
-    print ">>> main_compare", args
+    print(">>> main_compare", args)
   
   # SETTING
   run1       = args.run
   run2       = args.run2
   file1      = args.file1
   file2      = args.file2
-  print '-'*80
-  print ">>> Create gain calibration payload..."
-  print ">>> %-6s = %s"%('run1',run1)
-  print ">>> %-6s = %s"%('run2',run2)
-  print ">>> %-6s = %r"%('file1',file1)
-  print ">>> %-6s = %r"%('file2',file2)
-  print '-'*80
+  print('-'*80)
+  print(">>> Create gain calibration payload...")
+  print(">>> %-6s = %s"%('run1',run1))
+  print(">>> %-6s = %s"%('run2',run2))
+  print(">>> %-6s = %r"%('file1',file1))
+  print(">>> %-6s = %r"%('file2',file2))
+  print('-'*80)
   
 
 
 if __name__ == "__main__":
   main(args)
-  print ">>> Done"
+  print(">>> Done")
   
 
