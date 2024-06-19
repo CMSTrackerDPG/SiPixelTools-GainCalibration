@@ -23,6 +23,7 @@ era       = eras.Run3 #eras.Run2_2017
 globaltag = 'auto:run3_data_prompt' #'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'
 ext       = 'dmp'
 sqlfile   = "siPixelVCal.db"
+tag       = "SiPixelVCal_phase1_2024_v1"
 dmpfile   = options.input or "GainCalibration_%s_%s.%s"%(fed,run,ext)
 
 # PRINT
@@ -164,13 +165,12 @@ process.VCalReader = cms.ESSource("PoolDBESSource",
         messageLevel = cms.untracked.int32(verbosity),
         authenticationPath = cms.untracked.string('')
     ),
-    connect = cms.string("sqlite_file:"+sqlfile),
-    # connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),  # DB
+    #connect = cms.string("sqlite_file:"+sqlfile),
+    connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),  # DB
     toGet = cms.VPSet(
         cms.PSet(
             record = cms.string("SiPixelVCalRcd"),
-            #tag = cms.string("SiPixelVCal_v1")
-            tag = cms.string("SiPixelVCal_phase1_2023_v4")
+            tag = cms.string(tag)
         ),
     ),
 )
