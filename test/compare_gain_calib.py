@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 # Author: Izaak Neutelings (May 2020)
 # Description: Compare two gain calibration files for debugging
 #   cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_323203/GainCalibration_1205_323203.dmp ./
@@ -29,7 +29,7 @@ def scalevec(a,b,r,log=False):
 
 def ensureTFile(fname,option='READ',verb=0):
   """Open TFile, checking if the file in the given path exists."""
-  if isinstance(fname,basestring):
+  if isinstance(fname,str):
     if not os.path.isfile(fname):
       raise IOError('File in path "%s" does not exist!'%(fname))
       exit(1)
@@ -37,7 +37,7 @@ def ensureTFile(fname,option='READ',verb=0):
     if not file or file.IsZombie():
       raise IOError('Could not open file by name %r!'%(fname))
     if verb>=1:
-      print "Opened file %s..."%(fname)
+      print("Opened file %s..."%(fname))
   else:
     file = fname
     if not file or (hasattr(file,'IsZombie') and file.IsZombie()):
@@ -54,9 +54,9 @@ def ensuredir(dirname,**kwargs):
   elif not os.path.exists(dirname):
     os.makedirs(dirname)
     if verbosity>=1:
-      print '>>> Made directory "%s"'%(dirname)
+      print('>>> Made directory "%s"'%(dirname))
     if not os.path.exists(dirname):
-      print '>>> Failed to make directory "%s"'%(dirname)
+      print('>>> Failed to make directory "%s"'%(dirname))
   return dirname
   
 
@@ -75,7 +75,7 @@ def getdirs(file,dirpath,depth=0,verb=0):
     cwdpath = '/'.join(dirnames[:icwd]) # cwd
     dirpath = '/'.join(dirnames[icwd:]) # new dir path
     if verb>=2:
-      print prefix+"Skip to cwdpath=%r, look for dirpath=%r"%(cwdpath,dirpath)
+      print(prefix+"Skip to cwdpath=%r, look for dirpath=%r"%(cwdpath,dirpath))
     cwddir = file.Get(cwdpath)
     assert cwddir, "Could not open TDirectory %r in %s"%(cwdpath,file.GetPath())
   else:
@@ -85,8 +85,8 @@ def getdirs(file,dirpath,depth=0,verb=0):
   searchpath = dirnames[icwd] # look for this TDirectory in cwddir
   nextpath = '/'.join(dirnames[icwd+1:]) if icwd<len(dirnames) else "" # next dir path
   if verb>=2:
-    print prefix+"cwdpath=%r, dirpath=%r"%(cwdpath,dirpath)
-    print prefix+"searchpath=%r, nextpath=%r"%(searchpath,nextpath)
+    print(prefix+"cwdpath=%r, dirpath=%r"%(cwdpath,dirpath))
+    print(prefix+"searchpath=%r, nextpath=%r"%(searchpath,nextpath))
   for key in cwddir.GetListOfKeys():
     if not gROOT.GetClass(key.GetClassName()).InheritsFrom('TDirectory'): continue
     #print cwddir.Get(key.GetName()), key, key.GetClassName(), type(key)
@@ -94,20 +94,20 @@ def getdirs(file,dirpath,depth=0,verb=0):
     dirname = dir.GetName()
     match = fnmatch.fnmatch(dirname,searchpath)
     if verb>=3:
-      print prefix+"Match %r to %r in %s: %r"%(dirname,searchpath,cwddir.GetPath(),match)
+      print(prefix+"Match %r to %r in %s: %r"%(dirname,searchpath,cwddir.GetPath(),match))
     if not match: continue # ignore
     if nextpath: # look for path of dirpath recursively
       dirs.extend(getdirs(dir,nextpath,depth=depth+2,verb=verb))
     else: # stop recursion
       if verb>=3:
-        print prefix+"  Stop recursion" #with %r in %s"%(dirname,file.GetPath())
+        print(prefix+"  Stop recursion") #with %r in %s"%(dirname,file.GetPath())
       dirs.append(dir)
   if depth==0:
     assert dirs, "Could not find %r in %s"%(dirpath,file.GetPath())
     if verb>=1:
-      print prefix+"Found: "
+      print(prefix+"Found: ")
       for dir in dirs:
-        print prefix+"  %s (%r)"%(dir.GetPath(),dir)
+        print(prefix+"  %s (%r)"%(dir.GetPath(),dir))
   return dirs
   
 
@@ -122,7 +122,7 @@ def gethists(file,hnames,verb=0):
     searchhname = os.path.basename(fullsearchhname)
     nfound = 0
     if verb>=1:
-      print ">>> gethists: Look for %s in %s"%(searchhname,dirname)
+      print(">>> gethists: Look for %s in %s"%(searchhname,dirname))
     if dirname not in dirs:
       dirs[dirname] = getdirs(file,dirname,verb=verb) # cache for later reuse
     for dir in dirs[dirname]:
@@ -133,19 +133,19 @@ def gethists(file,hnames,verb=0):
         hname = hist.GetName()
         match = fnmatch.fnmatch(hname,searchhname)
         if verb>=3 or (match and verb>=2):
-          print ">>> gethists: Match %r to %r in %s: %r"%(hname,searchhname,file.GetPath(),match)
+          print(">>> gethists: Match %r to %r in %s: %r"%(hname,searchhname,file.GetPath(),match))
         if not match: continue
         fullhname = dir.GetPath().split(':/')[-1]+'/'+hname
         if fullhname not in hists:
           hists[fullhname] = hist
           nfound += 1
         else:
-          print ">>> gethists: Warning! Found %r twice: %s and %s"%(fullhname,hists[fullhname],hist)
+          print(">>> gethists: Warning! Found %r twice: %s and %s"%(fullhname,hists[fullhname],hist))
     assert nfound>0, "gethists: Warning! Could not find %r in %s"%(searchhname,file.GetPath())
   if verb>=1:
-    print ">>> gethists: Found: "
-    for hname, hist in hists.iteritems():
-      print ">>> gethists:   %s (%r)"%(hname,hist)
+    print(">>> gethists: Found: ")
+    for hname, hist in hists.items():
+      print(">>> gethists:   %s (%r)"%(hname,hist))
   return hists
   
 
@@ -326,8 +326,8 @@ def compare(fname1,fname2,hnames,outdir="",verb=0):
     for filea, hista, fileb, histb in [(file1,hists1,file2,hists2),(file2,hists2,file1,hists1)]:
       for hname in hista:
         if hname not in histb:
-          print ">>> compare: Warning! Could not find %s in %s"%(hname,fileb.GetPath())
-    for fullhname, hist1 in hists1.iteritems():
+          print(">>> compare: Warning! Could not find %s in %s"%(hname,fileb.GetPath()))
+    for fullhname, hist1 in hists1.items():
       if fullhname not in hists2: continue
       hist2 = hists2[fullhname]
       pname = os.path.join(outdir,'_'.join(p.replace('_','') for p in fullhname.split('/')[2:]))
@@ -355,18 +355,18 @@ def compare(fname1,fname2,hnames,outdir="",verb=0):
         if "GainChi2NDF1d" in fullhname:
           draw(pname,[hist1,hist2],xtitle=xtitle,ytitle=ytitle,logx=logx,logy=True,norm=False,dividebybins=True,tag="_dividebybins")
   if statuses1 and statuses2:
-    print ">>> Compare status of fit result:"
-    ntot1 = sum(v for k,v in statuses1.iteritems())
-    ntot2 = sum(v for k,v in statuses2.iteritems())
-    print ">>> Total number of pixels: %d (%s), %d (%s)"%(ntot1,title1,ntot2,title2)
-    print ">>> %8s %16s %16s"%("Status",title1,title2)
-    for status in sorted(range(-11,11),key=lambda s: abs(s)):
+    print(">>> Compare status of fit result:")
+    ntot1 = sum(v for k,v in statuses1.items())
+    ntot2 = sum(v for k,v in statuses2.items())
+    print(">>> Total number of pixels: %d (%s), %d (%s)"%(ntot1,title1,ntot2,title2))
+    print(">>> %8s %16s %16s"%("Status",title1,title2))
+    for status in sorted(list(range(-11,11)),key=lambda s: abs(s)):
       if status not in statuses1 and status not in statuses1: continue
       npix1 = statuses1.get(status,0)
       npix2 = statuses2.get(status,0)
       frac1 = 100.*npix1/ntot1
       frac2 = 100.*npix2/ntot2
-      print ">>> %8s %8d %7.2f%% %8d %6.2f%%"%(status,npix1,frac1,npix2,frac2)
+      print(">>> %8s %8d %7.2f%% %8d %6.2f%%"%(status,npix1,frac1,npix2,frac2))
   
 
 def main(args):
@@ -413,4 +413,4 @@ if __name__ == "__main__":
                                               help="set verbosity, default=%(default)d, const=%(const)d" )
   args = parser.parse_args()
   main(args)
-  print ">>>\n>>> Done."
+  print(">>>\n>>> Done.")
