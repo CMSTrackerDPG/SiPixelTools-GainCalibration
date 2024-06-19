@@ -100,11 +100,12 @@ def execute(command,dry=False,fatal=True,verb=0):
       print(">>> Executing: %r"%(command))
     try:
       #process = Popen(command.split(),stdout=PIPE,stderr=STDOUT) #,shell=True)
-      process = Popen(command,stdout=PIPE,stderr=STDOUT,bufsize=1,shell=True) #,universal_newlines=True
-      for line in iter(process.stdout.readline,""):
+      process = Popen(command,stdout=PIPE,stderr=STDOUT,shell=True) #,universal_newlines=True
+      for line in iter(process.stdout.readline, b''):
+        ld = line.decode("utf-8")
         if verb>=1: # real time print out (does not work for python scripts without flush)
-          print(line.rstrip())
-        out += line
+          print(ld.rstrip())
+        out += ld
       process.stdout.close()
       retcode = process.wait()
       ##print 0, process.communicate()
@@ -249,7 +250,7 @@ class StorageSystem(object):
     path     = self.expandpath(*paths)
     filelist = self.ls(path,**kwargs)
     if fileurl and path.startswith(self.parent):
-      if not isinstance(fileurl,basestring):
+      if not isinstance(fileurl,str):
         fileurl = self.fileurl
     else:
       fileurl = ""
@@ -279,7 +280,7 @@ class StorageSystem(object):
         tmpdir = self.tmpdir
       tmpdir  = ensuredir(tmpdir,verb=verb)
       htarget = os.path.join(tmpdir,os.path.basename(target))
-    if isinstance(sources,basestring):
+    if isinstance(sources,str):
       sources = [ sources ]
     source = ""
     for i, file in enumerate(sources,1):
@@ -518,7 +519,7 @@ tcol_dict = { 'black':  30,  'red':     31, 'green': 32,
               'yellow': 33,  'orange':  33, 'blue':  34,
               'purple': 35,  'magenta': 36, 'white': 37,
               'grey':   90,  'none':     0 }
-bcol_dict = {k: (10+v if v else v) for k,v in tcol_dict.iteritems()}
+bcol_dict = {k: (10+v if v else v) for k,v in tcol_dict.items()}
 def color(string,c='green',b=False,**kwargs):
   tcol_key   = kwargs.get('color',     c     )
   bcol_key   = kwargs.get('background','none')
