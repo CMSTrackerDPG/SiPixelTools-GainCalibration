@@ -104,7 +104,9 @@ git cms-addpkg CondTools/SiPixel
 scram b -j8
 cd CondTools/SiPixel/test
 
-# edit hardcoded VCal -> #electrons slopes/offsets in SiPixelVCalDB_cfg.py
+# edit hardcoded VCal -> #electrons slopes/offsets in SiPixelVCalDB_cfg.py or simply download the latest version from the [SiPixelTools-GainCalibration](https://github.com/CMSTrackerDPG/SiPixelTools-GainCalibration.git) repository
+curl -O https://raw.githubusercontent.com/CMSTrackerDPG/SiPixelTools-GainCalibration/master/test/SiPixelVCalDB_cfg.py
+# run the cfg file
 cmsRun SiPixelVCalDB_cfg.py
 ```
 
