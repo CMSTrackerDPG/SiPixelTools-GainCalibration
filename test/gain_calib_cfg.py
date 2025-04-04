@@ -13,7 +13,7 @@ options.register('input',   "",     mytype=VarParsing.varType.string)
 options.register('minPVal', 0.0,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
 options.register('minChi2', 500.,    mytype=VarParsing.varType.float) # minChi2
 options.register('useDB',   False,    mytype=VarParsing.varType.bool) #
-options.register('tagName', "SiPixelVCal_phase1_2024_v1",    mytype=VarParsing.varType.string)
+options.register('tagName', "SiPixelVCal_phase1_2025_v0",    mytype=VarParsing.varType.string)
 options.register('verb',    0,      mytype=VarParsing.varType.int)
 options.parseArguments()
 fed       = options.fed

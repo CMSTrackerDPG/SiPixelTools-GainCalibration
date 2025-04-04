@@ -66,7 +66,7 @@ user = getpass.getuser()
 #    user = subprocess.call('whoami')
 #    # user = commands.getoutput('whoami') 
 #file = "/tmp/" + user + "/SiPixelVCal.db"
-tag = "SiPixelVCal_phase1_2024_v1"
+tag = "SiPixelVCal_phase1_2025_v0"
 file = tag + ".db"
 sqlfile = "sqlite_file:" + file
 print(">>> Uploading as user %s into file %s, i.e. %s"%(user,file,sqlfile))
@@ -106,8 +106,8 @@ slope      = 47.
 slope_L1   = 45.7
 offset     = -60.
 offset_L1  = -308.
-corrs_bpix = {1: 1.07, 2: 1.04, 3: 1.027, 4: 1.015}
-corrs_fpix = {1: 1.1255, 2: 1.077}
+corrs_bpix = {1: 1.095, 2: 1.056, 3: 1.039, 4: 1.023}
+corrs_fpix = {1: 1.1397, 2: 1.0914}
 layers     = [1,2,3,4]
 nladders   = { 1: 12, 2: 28, 3: 44, 4: 64, }
 sides      = [1,2]   # 1=minus, 2=plus
