@@ -66,10 +66,11 @@ user = getpass.getuser()
 #    user = subprocess.call('whoami')
 #    # user = commands.getoutput('whoami') 
 #file = "/tmp/" + user + "/SiPixelVCal.db"
-file = "SiPixelVCal_phase1_2024_v1.db"
+tag = "SiPixelVCal_phase1_2024_v1"
+file = tag + ".db"
 sqlfile = "sqlite_file:" + file
 print(">>> Uploading as user %s into file %s, i.e. %s"%(user,file,sqlfile))
-if os.path.exists("siPixelVCal.db"):
+if os.path.exists(file):
   oldfile = file.replace(".db","_old.db")
   print(">>> Backing up locally existing '%s' -> '%s'"%(file,oldfile))
   shutil.move(file,oldfile)
@@ -93,12 +94,8 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     toPut = cms.VPSet(
         cms.PSet(
             record = cms.string('SiPixelVCalRcd'),
-            tag = cms.string('SiPixelVCal_phase1_2024_v1')
-        ),
-        #cms.PSet(
-        #    record = cms.string('SiPixelVCalSimRcd'),
-        #    tag = cms.string('SiPixelVCalSim_v1')
-        #),
+            tag = cms.string(tag)
+        )
     )
 )
 
