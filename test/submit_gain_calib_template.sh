@@ -22,7 +22,7 @@ cpurl="root://eoscms.cern.ch/"
 # FILES
 script="gain_calib_cfg.py"
 infile="GainCalibration_${fed}_${run}.${ext}"
-sqlite="siPixelVCal.db" # VCal DB
+sqlite="$VCALTAG.db" # VCal DB
 outfile="GainCalibration.root"
 
 # ENVIRONMENT
