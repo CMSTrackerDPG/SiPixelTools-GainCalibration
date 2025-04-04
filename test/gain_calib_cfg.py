@@ -12,30 +12,39 @@ options.register('fed',     1205,   mytype=VarParsing.varType.int)
 options.register('input',   "",     mytype=VarParsing.varType.string)
 options.register('minPVal', 0.0,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
 options.register('minChi2', 500.,    mytype=VarParsing.varType.float) # minChi2
+options.register('useDB',   False,    mytype=VarParsing.varType.bool) #
+options.register('tagName', "SiPixelVCal_phase1_2024_v1",    mytype=VarParsing.varType.string)
 options.register('verb',    0,      mytype=VarParsing.varType.int)
 options.parseArguments()
 fed       = options.fed
 run       = options.run
 minPVal   = options.minPVal
 minChi2   = options.minChi2
+useDB     = options.useDB
+tag       = options.tagName
 verbosity = options.verb
 era       = eras.Run3 #eras.Run2_2017
 globaltag = 'auto:run3_data_prompt' #'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'
 ext       = 'dmp'
-sqlfile   = "siPixelVCal.db"
-tag       = "SiPixelVCal_phase1_2024_v1"
+sqlfile   = tag + ".db"
 dmpfile   = options.input or "GainCalibration_%s_%s.%s"%(fed,run,ext)
+
+if tag == '':
+    raise Exception("VCal tag must be specified")
 
 # PRINT
 print(">>> %-10s = '%s'"%('era',era))
 print(">>> %-10s = '%s'"%('globaltag',globaltag))
 print(">>> %-10s = '%s'"%('minPVal',minPVal))
 print(">>> %-10s = '%s'"%('minChi2',minChi2))
-print(">>> %-10s = '%s'"%('sqlfile',sqlfile))
+print(">>> %-10s = '%s'"%('useDB',useDB))
+if not useDB:
+    print(">>> %-10s = '%s'"%('sqlfile',sqlfile))
+print(">>> %-10s = '%s'"%('tag',tag))
 print(">>> %-10s = '%s'"%('dmpfile',dmpfile))
 
 # CHECK
-if not os.path.isfile(sqlfile):
+if not useDB and not os.path.isfile(sqlfile):
   raise IOError("VCal database object '%s' does not exist! cwd=%s"%(sqlfile,os.getcwd()))
 if not os.path.isfile(dmpfile):
   raise IOError("Dump file '%s' does not exist! cwd=%s"%(dmpfile,os.getcwd()))
@@ -165,8 +174,7 @@ process.VCalReader = cms.ESSource("PoolDBESSource",
         messageLevel = cms.untracked.int32(verbosity),
         authenticationPath = cms.untracked.string('')
     ),
-    #connect = cms.string("sqlite_file:"+sqlfile),
-    connect = cms.string("frontier://FrontierProd/CMS_CONDITIONS"),  # DB
+    connect = (cms.string("frontier://FrontierProd/CMS_CONDITIONS") if useDB else cms.string("sqlite_file:"+sqlfile)),
     toGet = cms.VPSet(
         cms.PSet(
             record = cms.string("SiPixelVCalRcd"),
