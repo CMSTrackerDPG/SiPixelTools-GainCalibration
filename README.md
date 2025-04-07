@@ -59,6 +59,11 @@ cmsRun SiPixelVCalDB_cfg.py tagName=SiPixelVCal_phase1_2025_v0
 This produces the output file named `SiPixelVCal_phase1_2025_v0.db`. After producing the file, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelVCalHistory).
 
 
+## Getting input files
+
+The pixel operations team takes a special local run that produces data files needed for deriving the gain calibrations. Once the run is taken, the data files are copied to a designated folder on the CERN EOS at the following path `/eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_#` where `#` is the run number of the local run. The output files from the analysis by default go into `/eos/cms/store/group/dpg_tracker_pixel/comm_pixel/$USER/`. To have write permissions to the `comm_pixel` area, one needs to be added to the [cms-eos-dpg-tracker](https://e-groups.cern.ch/e-groups/Egroup.do?egroupName=cms-eos-dpg-tracker) e-group as described [here](https://twiki.cern.ch/twiki/bin/view/CMS/T2CHCERNEosTeams).
+
+
 ## Local run
 If you want to run the gain calibration on a single FED, please use [`test/gain_calib_cfg.py`](test/gain_calib_cfg.py)
 For example, to run a test job, try
@@ -67,6 +72,7 @@ cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run
 cmsRun gain_calib_cfg.py vcalTag=SiPixelVCal_phase1_2025_v0 run=10901 fed=1205
 ```
 The output will be `GainCalibration.root`. Check `text_output.log` for errors.
+
 
 ## Submission
 To launch the gain calibration process, you need to use [`test/run.py`](test/run.py) script,
@@ -130,7 +136,25 @@ where YEAR is the year the calibration was taken and VERSION is the number of pa
 ```
 ./run.py payload 10901 2025 0
 ```
-After producing the payloads, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelGainHistory).
+After producing the payloads, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelGainHistory). Also inform the AlCaDB
+contact at cms-pixel-db-contactATcern.ch about the location of newly produced VCal and gain calibration payloads and the contact will upload them to
+the conditions database.
+
+
+## Payload Inspector plots
+
+To get some visual information about the content of newly produced gain calibrations, the Payload Inspector tool can be used to produce some comparison plots. One option is to use a web-based interface available from the [CondDB browser](https://cms-conddb.cern.ch/cmsDbBrowser), which is not always very reliable, or, alternatively, one can produce the same plots at the command line using the following commands
+```
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflineGainComparisonBarrelTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflinePedestalComparisonBarrelTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflineGainComparisonEndcapTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflinePedestalComparisonEndcapTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+```
+The above plots compare gains and pedestals in BPix and FPix between the `2024_v1` and `2025_v0` gain calibrations.
+
 
 ## Contact
 If you have issues with running the gain calibration code or `run.py`, please contact
