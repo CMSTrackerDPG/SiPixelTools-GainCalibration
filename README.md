@@ -54,7 +54,7 @@ and also produces an output file named `calc_corrections_2025_v0.png` that conta
 
 To get the updated database object, run
 ```
-cmsRun SiPixelVCalDB_cfg.py
+cmsRun SiPixelVCalDB_cfg.py tagName=SiPixelVCal_phase1_2025_v0
 ```
 This produces the output file named `SiPixelVCal_phase1_2025_v0.db`. After producing the file, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelVCalHistory).
 
@@ -64,7 +64,7 @@ If you want to run the gain calibration on a single FED, please use [`test/gain_
 For example, to run a test job, try
 ```
 cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10901/GainCalibration_1205_10901.dmp ./
-cmsRun gain_calib_cfg.py run=10901 fed=1205
+cmsRun gain_calib_cfg.py vcalTag=SiPixelVCal_phase1_2025_v0 run=10901 fed=1205
 ```
 The output will be `GainCalibration.root`. Check `text_output.log` for errors.
 
@@ -73,7 +73,7 @@ To launch the gain calibration process, you need to use [`test/run.py`](test/run
 which will submit one job for each FED to the HTCondor batch system.
 First, prepare the job directory with
 ```
-./run.py create RUNNUMBER -i INPUTDIR -o OUTPUTDIR
+./run.py create RUNNUMBER -t VCALTAG -i INPUTDIR -o OUTPUTDIR
 ```
 For example,
 ```

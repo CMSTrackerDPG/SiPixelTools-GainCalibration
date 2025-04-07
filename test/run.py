@@ -35,7 +35,7 @@ parser_cmn.add_argument('-F', '--FPix-only', dest='FPixOnly', default=False, act
                                              help="only run over FPix" )
 parser_cmn.add_argument('-n', '--fed',       dest='feds', type=int, nargs='+', default=None, action='store',
                         metavar='FED',       help="only run over these feds" )
-parser_cmn.add_argument('-t', '--tag',       dest='tag', default=None, action='store',
+parser_cmn.add_argument('-t', '--tag',       dest='tag', default='', action='store',
                         metavar='VCALTAG',   help="VCal calibration tag" )
 parser_cmn.add_argument('-v', '--verbose',   dest='verbosity', type=int, nargs='?', const=1, default=0, action='store',
                                              help="set verbosity" )
@@ -165,6 +165,8 @@ def main_create(args):
   outdir           = os.path.join(outdir,"GainRun_%d"%run)
   rundir           = os.path.join(cwd,"Run_%d"%run)
   vcaltag          = args.tag
+  if vcaltag == '':
+    raise Exception("VCal tag must be specified")
   subtask_template = "submit_gain_calib_template.sub"
   submit_template  = "submit_gain_calib_template.sh"
   config_template  = "gain_calib_cfg.py"

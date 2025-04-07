@@ -13,7 +13,7 @@ options.register('input',   "",     mytype=VarParsing.varType.string)
 options.register('minPVal', 0.0,   mytype=VarParsing.varType.float) # minChi2Prob, 0.0 to switch off
 options.register('minChi2', 500.,    mytype=VarParsing.varType.float) # minChi2
 options.register('useDB',   False,    mytype=VarParsing.varType.bool) #
-options.register('tagName', "SiPixelVCal_phase1_2025_v0",    mytype=VarParsing.varType.string)
+options.register('vcalTag', "",    mytype=VarParsing.varType.string)
 options.register('verb',    0,      mytype=VarParsing.varType.int)
 options.parseArguments()
 fed       = options.fed
@@ -21,7 +21,7 @@ run       = options.run
 minPVal   = options.minPVal
 minChi2   = options.minChi2
 useDB     = options.useDB
-tag       = options.tagName
+tag       = options.vcalTag
 verbosity = options.verb
 era       = eras.Run3 #eras.Run2_2017
 globaltag = 'auto:run3_data_prompt' #'auto:run2_data' #'auto:upgrade2017', '100X_dataRun2_Express_v2'

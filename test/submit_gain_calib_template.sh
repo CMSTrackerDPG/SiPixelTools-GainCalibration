@@ -48,7 +48,7 @@ echo -e "************************\n"
 
 # RUN SCRIPT
 echo ">>> Running CMSSW job:"
-peval "cmsRun $script run=$run fed=$fed"
+peval "cmsRun $script vcalTag=$VCALTAG run=$run fed=$fed"
 peval "cat *.log"
 
 # COPY BACK RESULT

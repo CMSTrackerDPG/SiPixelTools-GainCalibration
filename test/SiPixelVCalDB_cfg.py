@@ -7,6 +7,11 @@ import os, shlex, shutil, getpass
 import FWCore.ParameterSet.Config as cms
 from Configuration.StandardSequences.Eras import eras
 
+from FWCore.ParameterSet.VarParsing import VarParsing
+options   = VarParsing('analysis')
+options.register('tagName', "",    mytype=VarParsing.varType.string)
+options.parseArguments()
+
 # SETTINGS
 run       = 313000 # select the geometry for Phase-I pixels
 era       = eras.Run3
@@ -66,7 +71,9 @@ user = getpass.getuser()
 #    user = subprocess.call('whoami')
 #    # user = commands.getoutput('whoami') 
 #file = "/tmp/" + user + "/SiPixelVCal.db"
-tag = "SiPixelVCal_phase1_2025_v0"
+tag = options.tagName
+if tag == '':
+    raise Exception("VCal tag name must be specified")
 file = tag + ".db"
 sqlfile = "sqlite_file:" + file
 print(">>> Uploading as user %s into file %s, i.e. %s"%(user,file,sqlfile))
