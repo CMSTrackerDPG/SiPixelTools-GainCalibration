@@ -25,20 +25,19 @@ cd SiPixelTools/GainCalibration/test
 ## VCal database object
 If there has been a significant amount of integrated luminosity delivered since the last update of the gain calibrations, the VCal database object needs to be updated
 to take that into account. To determine the amount, the `brilcalc` tool can be used as in the following example that checks the amount of delivered integrated
-luminosity in between the `2024_v1` [elog](http://cmsonline.cern.ch/cms-elog/1219824) and `2025_v0` [elog](http://cmsonline.cern.ch/cms-elog/1253369) gain calibration
-tags. This is best done in a separate terminal connected to lxplus. The specified time span does not have to be precise down to an hour, it is sufficient to get the
-dates correctly. However, `brilcalc` tends to crash on longer time spans so it might be necessary to break it down into multiple time spans that actually contain
-some luminosity. For example, the actual time span in this particular case should be `--begin "06/13/24 00:00:00" --end "03/25/25 00:00:00` but due to `brilcalc`
-crashing, it has been shortened as shown below
+luminosity in between the `2025_v0` [elog](http://cmsonline.cern.ch/cms-elog/1253369) and `2025_v1` [elog](http://cmsonline.cern.ch/cms-elog/1269682) gain calibration
+tags. This is best done in a separate terminal connected to lxplus:
 ```
 source /cvmfs/cms-bril.cern.ch/cms-lumi-pog/brilws-docker/brilws-env
 
-brilcalc lumi -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json --begin "06/13/24 00:00:00" --end "11/04/24 00:00:00"
+brilcalc lumi -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json --begin "03/25/25 00:00:00" --end "06/26/25 23:59:59"
 ```
-The obtained amount of delivered integrated luminosity in this case is 93.444749941 /fb. This amount has been added to
+The specified time span does not have to be precise down to an hour, it is sufficient to get the dates correctly. However, `brilcalc` has been observed to crash on
+longer time spans and in those cases it was necessary to break it down into multiple time spans that actually contain some luminosity.
+The obtained amount of delivered integrated luminosity in this particular case is 23.851410627 /fb. This amount has been added to
 [`test/calc_corrections.py`](test/calc_corrections.py) with the following line
 ```
-lumi["2025_v0"] = lumi["2024_v1"] + 93.444749941  # in fb^{-1}
+lumi["2025_v1"] = lumi["2025_v0"] + 23.851410627  # in fb^{-1}
 ```
 Next, we need to obtain the updated correction factors for VCal -> #electrons slopes and put them in [`test/SiPixelVCalDB_cfg.py`](test/SiPixelVCalDB_cfg.py). This is done by running
 ```
@@ -46,17 +45,17 @@ python3 calc_corrections.py
 ```
 which prints out the correction factors to the screen
 ```
-values used for 2025_v0 new model:
-corrs_bpix = {1: 1.092, 2: 1.052, 3: 1.036, 4: 1.021}
-corrs_fpix = {1: 1.1373, 2: 1.0882}
+values used for 2025_v1 new model:
+corrs_bpix = {1: 1.095, 2: 1.055, 3: 1.038, 4: 1.023}
+corrs_fpix = {1: 1.1393, 2: 1.0908}
 ```
-and also produces an output file named `calc_corrections_2025_v0.png` that contain a graph of received doses (in Mrad) for different parts of the pixel detector.
+and also produces an output file named `calc_corrections_2025_v1.png` that contain a graph of received doses (in Mrad) for different parts of the pixel detector.
 
 To get the updated database object, run
 ```
-cmsRun SiPixelVCalDB_cfg.py tagName=SiPixelVCal_phase1_2025_v0
+cmsRun SiPixelVCalDB_cfg.py tagName=SiPixelVCal_phase1_2025_v1
 ```
-This produces the output file named `SiPixelVCal_phase1_2025_v0.db`. After producing the file, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelVCalHistory).
+This produces the output file named `SiPixelVCal_phase1_2025_v1.db`. After producing the file, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelVCalHistory).
 
 
 ## Getting input files
@@ -68,8 +67,8 @@ The pixel operations team takes a special local run that produces data files nee
 If you want to run the gain calibration on a single FED, please use [`test/gain_calib_cfg.py`](test/gain_calib_cfg.py)
 For example, to run a test job, try
 ```
-cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10901/GainCalibration_1205_10901.dmp ./
-cmsRun gain_calib_cfg.py vcalTag=SiPixelVCal_phase1_2025_v0 run=10901 fed=1205
+cp /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10981/GainCalibration_1205_10981.dmp ./
+cmsRun gain_calib_cfg.py vcalTag=SiPixelVCal_phase1_2025_v1 run=10981 fed=1205
 ```
 The output will be `GainCalibration.root`. Check `text_output.log` for errors.
 
@@ -83,31 +82,31 @@ First, prepare the job directory with
 ```
 For example,
 ```
-./run.py create 10901 -t SiPixelVCal_phase1_2025_v0 -i /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10901 -o /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/$USER/
+./run.py create 10981 -t SiPixelVCal_phase1_2025_v1 -i /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/GainCalibrations/Phase1/Run_10981 -o /eos/cms/store/group/dpg_tracker_pixel/comm_pixel/$USER/
 ```
 To run from the default `Phase1/Run_*` directory, which is what you will do for any "real" gain calibration, simply do
 ```
-./run.py create 10901 -t SiPixelVCal_phase1_2025_v0
+./run.py create 10981 -t SiPixelVCal_phase1_2025_v1
 ```
 This creates a folder with a config file storing information about input/output folders
 and creates the job scripts for the submission (from the template).
 If you want to run over BPIX only, use the `--BPix-only` option
 ```
-./run.py create 10901 -t SiPixelVCal_phase1_2025_v0 --BPix-only
+./run.py create 10981 -t SiPixelVCal_phase1_2025_v1 --BPix-only
 ```
 
 ## Status & resubmission
 Submit your jobs
 ```
-./run.py submit 10901
+./run.py submit 10981
 ```
 You can check the status of your jobs with `condor_q`, or with
 ```
-./run.py status 10901
+./run.py status 10981
 ```
 If jobs fail, please use
 ```
-./run.py resubmit 10901
+./run.py resubmit 10981
 ```
 To resubmit one or more specific FED jobs, please use `--fed`.
 
@@ -115,26 +114,26 @@ To resubmit one or more specific FED jobs, please use `--fed`.
 ## Finalizing
 Now, hadd the output
 ```
-./run.py hadd 10901
+./run.py hadd 10981
 ```
 This creates a large `GainCalibration.root` file.
 
 Create a summary pdf with
 ```
-./run.py summary 10901
+./run.py summary 10981
 ```
 Then create a tar file with the output and print some output
 <!-- to be posted on the [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelGainCalibrationDoc) but is no longer actively done. -->
 ```
-./run.py twiki 10901
+./run.py twiki 10981
 ```
 The last step is to produce the payloads (database objects) for offline and the HLT
 ```
-./run.py payload 10901 YEAR VERSION
+./run.py payload RUNNUMBER YEAR VERSION
 ```
 where YEAR is the year the calibration was taken and VERSION is the number of payloads produced in that year, for example
 ```
-./run.py payload 10901 2025 0
+./run.py payload 10981 2025 1
 ```
 After producing the payloads, please update the corresponding [TWiki](https://twiki.cern.ch/twiki/bin/viewauth/CMS/SiPixelGainHistory). Also inform the AlCaDB
 contact at cms-pixel-db-contactATcern.ch about the location of newly produced VCal and gain calibration payloads and the contact will upload them to
@@ -145,15 +144,15 @@ the conditions database.
 
 To get some visual information about the content of newly produced gain calibrations, the Payload Inspector tool can be used to produce some comparison plots. One option is to use a web-based interface available from the [CondDB browser](https://cms-conddb.cern.ch/cmsDbBrowser), which is not always very reliable, or, alternatively, one can produce the same plots at the command line using the following commands
 ```
-getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflineGainComparisonBarrelTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflineGainComparisonBarrelTwoTags --tag SiPixelGainCalibration_2025_v0 --tagtwo SiPixelGainCalibration_2025_v1 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
 
-getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflinePedestalComparisonBarrelTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflinePedestalComparisonBarrelTwoTags --tag SiPixelGainCalibration_2025_v0 --tagtwo SiPixelGainCalibration_2025_v1 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
 
-getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflineGainComparisonEndcapTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflineGainComparisonEndcapTwoTags --tag SiPixelGainCalibration_2025_v0 --tagtwo SiPixelGainCalibration_2025_v1 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
 
-getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflinePedestalComparisonEndcapTwoTags --tag SiPixelGainCalibration_2024_v1 --tagtwo SiPixelGainCalibration_2025_v0 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
+getPayloadData.py --plugin pluginSiPixelGainCalibrationOffline_PayloadInspector --plot plot_SiPixelGainCalibOfflinePedestalComparisonEndcapTwoTags --tag SiPixelGainCalibration_2025_v0 --tagtwo SiPixelGainCalibration_2025_v1 --time_type Run --iovs '{"start_iov": "1", "end_iov": "1"}' --iovstwo '{"start_iov": "1", "end_iov": "1"}' --db Prod --test
 ```
-The above plots compare gains and pedestals in BPix and FPix between the `2024_v1` and `2025_v0` gain calibrations.
+The above plots compare gains and pedestals in BPix and FPix between the `2025_v0` and `2025_v1` gain calibrations.
 
 
 ## Contact
