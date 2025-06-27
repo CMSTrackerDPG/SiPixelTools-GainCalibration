@@ -33,12 +33,12 @@ crashing, it has been shortened as shown below
 ```
 source /cvmfs/cms-bril.cern.ch/cms-lumi-pog/brilws-docker/brilws-env
 
-brilcalc lumi -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json --begin "04/02/24 00:00:00" --end "11/04/24 00:00:00"
+brilcalc lumi -u /fb --normtag /cvmfs/cms-bril.cern.ch/cms-lumi-pog/Normtags/normtag_BRIL.json --begin "06/13/24 00:00:00" --end "11/04/24 00:00:00"
 ```
-The obtained amount of delivered integrated luminosity in this case is 123.280322777 /fb. This amount has been added to
+The obtained amount of delivered integrated luminosity in this case is 93.444749941 /fb. This amount has been added to
 [`test/calc_corrections.py`](test/calc_corrections.py) with the following line
 ```
-lumi["2025_v0"] = lumi["2024_v1"] + 123.280322777  # in fb^{-1}
+lumi["2025_v0"] = lumi["2024_v1"] + 93.444749941  # in fb^{-1}
 ```
 Next, we need to obtain the updated correction factors for VCal -> #electrons slopes and put them in [`test/SiPixelVCalDB_cfg.py`](test/SiPixelVCalDB_cfg.py). This is done by running
 ```
@@ -47,8 +47,8 @@ python3 calc_corrections.py
 which prints out the correction factors to the screen
 ```
 values used for 2025_v0 new model:
-corrs_bpix = {1: 1.095, 2: 1.056, 3: 1.039, 4: 1.023}
-corrs_fpix = {1: 1.1397, 2: 1.0914}
+corrs_bpix = {1: 1.092, 2: 1.052, 3: 1.036, 4: 1.021}
+corrs_fpix = {1: 1.1373, 2: 1.0882}
 ```
 and also produces an output file named `calc_corrections_2025_v0.png` that contain a graph of received doses (in Mrad) for different parts of the pixel detector.
 

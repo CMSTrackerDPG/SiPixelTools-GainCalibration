@@ -28,7 +28,7 @@ if __name__ == "__main__":
     lumi["2023_v3"] = lumi["2023_v1"] + 10.843993752  # in fb^{-1}
     lumi["2024_v0"] = lumi["2023_v3"] + 0.000401619  # in fb^{-1}
     lumi["2024_v1"] = lumi["2024_v0"] + 29.214249009  # in fb^{-1}
-    lumi["2025_v0"] = lumi["2024_v1"] + 123.280322777  # in fb^{-1}
+    lumi["2025_v0"] = lumi["2024_v1"] + 93.444749941  # in fb^{-1}
 
     print(f"Luminosity until end 2018: {lumi_2017 + lumi_2018:>7.2f} [1/fb]")
     for tag in lumi.keys():
