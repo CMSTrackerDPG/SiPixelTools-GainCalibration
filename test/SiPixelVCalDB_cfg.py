@@ -113,8 +113,8 @@ slope      = 47.
 slope_L1   = 45.7
 offset     = -60.
 offset_L1  = -308.
-corrs_bpix = {1: 1.095, 2: 1.055, 3: 1.038, 4: 1.023}
-corrs_fpix = {1: 1.1393, 2: 1.0908}
+corrs_bpix = {1: 1.101, 2: 1.065, 3: 1.047, 4: 1.029}
+corrs_fpix = {1: 1.1449, 2: 1.1004}
 layers     = [1,2,3,4]
 nladders   = { 1: 12, 2: 28, 3: 44, 4: 64, }
 sides      = [1,2]   # 1=minus, 2=plus
